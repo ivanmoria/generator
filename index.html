@@ -99,7 +99,7 @@ hr.dv{border:none;border-top:1px solid var(--rule);margin:18px 0}
 <body>
 
 <div class="top-bar">
-  <div class="top-bar-brand"><strong>IAPs</strong> · Gerador · <span id="brand-adapter">Ivan Moriá Borges</span> · <span id="brand-inst">UFMG</span> · 2026</div>
+  <div class="top-bar-brand"><strong>IAPs</strong> · Gerador · Ivan Moriá Borges · UFMG · 2026</div>
   <div class="top-bar-url">
     <label for="backend-url">URL do backend</label>
     <input type="text" id="backend-url" placeholder="https://generator-bgzt.onrender.com" value="https://generator-bgzt.onrender.com"/>
@@ -125,10 +125,6 @@ hr.dv{border:none;border-top:1px solid var(--rule);margin:18px 0}
     <div class="row2">
       <div class="fg"><span class="fl">Autor do livro</span><input type="text" id="f-bookauthor" placeholder="Kenneth E. Bruscia" value="Kenneth E. Bruscia"/></div>
       <div class="fg"><span class="fl">Ano de publicação</span><input type="text" id="f-year" placeholder="1987" value="1987"/></div>
-    </div>
-    <div class="row2">
-      <div class="fg"><span class="fl">Adaptação / Tradução por</span><input type="text" id="f-adapter" placeholder="Ivan Moriá Borges" value="Ivan Moriá Borges"/></div>
-      <div class="fg"><span class="fl">Instituição</span><input type="text" id="f-inst" placeholder="UFMG" value="UFMG"/></div>
     </div>
     <div class="row2">
       <div class="fg"><span class="fl">Arquivo cap. anterior</span><input type="text" id="f-ph" placeholder="cap32.html"/></div>
@@ -187,19 +183,6 @@ hr.dv{border:none;border-top:1px solid var(--rule);margin:18px 0}
 'use strict';
 var sc = 0, html = '';
 
-// Update top-bar brand live
-function updateBrand() {
-  var a = document.getElementById('f-adapter');
-  var i = document.getElementById('f-inst');
-  if (a) document.getElementById('brand-adapter').textContent = a.value || 'Ivan Moriá Borges';
-  if (i) document.getElementById('brand-inst').textContent = i.value || 'UFMG';
-}
-document.addEventListener('DOMContentLoaded', function() {
-  var fa = document.getElementById('f-adapter');
-  var fi = document.getElementById('f-inst');
-  if (fa) fa.addEventListener('input', updateBrand);
-  if (fi) fi.addEventListener('input', updateBrand);
-});
 
 function addSec(t, x) {
   t = t || ''; x = x || '';
@@ -254,8 +237,8 @@ function collect() {
     pages: document.getElementById('f-pages').value.trim(),
     bookauthor: document.getElementById('f-bookauthor').value.trim() || 'Kenneth E. Bruscia',
     year:  document.getElementById('f-year').value.trim() || '1987',
-    adapter: document.getElementById('f-adapter').value.trim() || 'Ivan Moriá Borges',
-    inst:  document.getElementById('f-inst').value.trim() || 'UFMG',
+    adapter: 'Ivan Moriá Borges',
+    inst:  'UFMG',
     ph:    document.getElementById('f-ph').value.trim(),
     pl:    document.getElementById('f-pl').value.trim(),
     nh:    document.getElementById('f-nh').value.trim(),
