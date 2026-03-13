@@ -294,12 +294,19 @@ async function gen() {
       body: JSON.stringify({ prompt: prompt })
     });
 
-    if (!r.ok) {
-      var e = {}; try { e = await r.json(); } catch(x) {}
-      throw new Error((e.error) || 'HTTP ' + r.status);
+    var rawText = await r.text();
+    var data;
+    try { data = JSON.parse(rawText); } catch(x) {
+      throw new Error('Resposta inválida do servidor: ' + rawText.slice(0, 200));
     }
 
-    var data = await r.json();
+    if (!r.ok || data.error) {
+      var msg = typeof data.error === 'object'
+        ? (data.error.message || JSON.stringify(data.error))
+        : (data.error || 'HTTP ' + r.status);
+      throw new Error(msg);
+    }
+
     var text = (data.content || []).map(function(b) { return b.text || ''; }).join('');
     text = text.replace(/^```html?\s*/i, '').replace(/\s*```$/, '').trim();
 
