@@ -2,8 +2,8 @@ const http = require('http');
 const https = require('https');
 
 const PORT = process.env.PORT || 3000;
-const API_KEY = process.env.GEMINI_API_KEY || '';
-const GEMINI_MODEL = 'gemini-2.0-flash-001';
+const API_KEY = process.env.GROQ_API_KEY || '';
+const MODEL = process.env.GROQ_MODEL || 'llama-3.3-70b-versatile';
 
 function setCORS(res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -20,7 +20,7 @@ const server = http.createServer((req, res) => {
 
   if (req.method === 'GET' && req.url === '/') {
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ status: 'ok', service: 'IAPs Generator API (Gemini)' }));
+    res.end(JSON.stringify({ status: 'ok', service: 'IAPs Generator API (Groq)' }));
     return;
   }
 
@@ -32,7 +32,7 @@ const server = http.createServer((req, res) => {
 
   if (!API_KEY) {
     res.writeHead(500, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ error: 'GEMINI_API_KEY not configured on server.' }));
+    res.end(JSON.stringify({ error: 'GROQ_API_KEY not configured on server.' }));
     return;
   }
 
@@ -53,20 +53,21 @@ const server = http.createServer((req, res) => {
       return;
     }
 
-    const geminiBody = JSON.stringify({
-      contents: [{ parts: [{ text: prompt }] }],
-      generationConfig: { maxOutputTokens: 8192, temperature: 0.2 }
+    const groqBody = JSON.stringify({
+      model: MODEL,
+      messages: [{ role: 'user', content: prompt }],
+      max_tokens: 8192,
+      temperature: 0.2
     });
 
-    const apiPath = '/v1beta/models/' + GEMINI_MODEL + ':generateContent?key=' + API_KEY;
-
     const options = {
-      hostname: 'generativelanguage.googleapis.com',
-      path: apiPath,
+      hostname: 'api.groq.com',
+      path: '/openai/v1/chat/completions',
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Content-Length': Buffer.byteLength(geminiBody)
+        'Authorization': 'Bearer ' + API_KEY,
+        'Content-Length': Buffer.byteLength(groqBody)
       }
     };
 
@@ -76,12 +77,10 @@ const server = http.createServer((req, res) => {
       apiRes.on('end', () => {
         try {
           const parsed = JSON.parse(data);
-          const text = parsed && parsed.candidates && parsed.candidates[0] &&
-                       parsed.candidates[0].content && parsed.candidates[0].content.parts &&
-                       parsed.candidates[0].content.parts[0] &&
-                       parsed.candidates[0].content.parts[0].text || '';
+          const text = parsed && parsed.choices && parsed.choices[0] &&
+                       parsed.choices[0].message && parsed.choices[0].message.content || '';
           if (!text) {
-            const errMsg = (parsed && parsed.error && parsed.error.message) || 'Resposta vazia do Gemini';
+            const errMsg = (parsed && parsed.error && parsed.error.message) || 'Resposta vazia do Groq';
             res.writeHead(502, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ error: errMsg }));
             return;
@@ -102,11 +101,11 @@ const server = http.createServer((req, res) => {
       res.end(JSON.stringify({ error: 'Upstream error: ' + e.message }));
     });
 
-    apiReq.write(geminiBody);
+    apiReq.write(groqBody);
     apiReq.end();
   });
 });
 
 server.listen(PORT, () => {
-  console.log('IAPs Generator backend running on port ' + PORT + ' (Gemini)');
+  console.log('IAPs Generator backend running on port ' + PORT + ' (Groq / ' + MODEL + ')');
 });
