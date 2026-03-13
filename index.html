@@ -102,7 +102,7 @@ hr.dv{border:none;border-top:1px solid var(--rule);margin:18px 0}
   <div class="top-bar-brand"><strong>IAPs</strong> · Gerador · Ivan Moriá Borges · UFMG · 2026</div>
   <div class="top-bar-url">
     <label for="backend-url">URL do backend</label>
-    <input type="text" id="backend-url" placeholder="https://seu-app.railway.app" value=""/>
+    <input type="text" id="backend-url" placeholder="https://generator-bgzt.onrender.com" value="https://generator-bgzt.onrender.com"/>
   </div>
 </div>
 
@@ -260,7 +260,7 @@ function setSteps(arr) {
 async function gen() {
   var backendUrl = document.getElementById('backend-url').value.trim().replace(/\/$/, '');
   if (!backendUrl) {
-    setStat('err', 'Cole a URL do seu backend Railway no campo do topo da página.');
+    setStat('err', 'Cole a URL do seu backend Render no campo do topo da página.');
     return;
   }
 
