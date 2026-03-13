@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Gerador IAPs · Ivan Moriá Borges</title>
+<title>Gerador IAPs</title>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet"/>
 <style>
@@ -99,7 +99,7 @@ hr.dv{border:none;border-top:1px solid var(--rule);margin:18px 0}
 <body>
 
 <div class="top-bar">
-  <div class="top-bar-brand"><strong>IAPs</strong> · Gerador · Ivan Moriá Borges · UFMG · 2026</div>
+  <div class="top-bar-brand"><strong>IAPs</strong> · Gerador · <span id="brand-adapter">Ivan Moriá Borges</span> · <span id="brand-inst">UFMG</span> · 2026</div>
   <div class="top-bar-url">
     <label for="backend-url">URL do backend</label>
     <input type="text" id="backend-url" placeholder="https://generator-bgzt.onrender.com" value="https://generator-bgzt.onrender.com"/>
@@ -122,6 +122,14 @@ hr.dv{border:none;border-top:1px solid var(--rule);margin:18px 0}
     <div class="fg"><span class="fl">Título em inglês</span><input type="text" id="f-tlen" placeholder="Psychoanalytic and Existential Perspectives"/></div>
     <div class="fg"><span class="fl">Subtítulo introdutório (inglês)</span><input type="text" id="f-lead" placeholder="Uma frase descritiva do capítulo"/></div>
     <div class="fg"><span class="fl">Páginas</span><input type="text" id="f-pages" placeholder="pp. 450–464"/></div>
+    <div class="row2">
+      <div class="fg"><span class="fl">Autor do livro</span><input type="text" id="f-bookauthor" placeholder="Kenneth E. Bruscia" value="Kenneth E. Bruscia"/></div>
+      <div class="fg"><span class="fl">Ano de publicação</span><input type="text" id="f-year" placeholder="1987" value="1987"/></div>
+    </div>
+    <div class="row2">
+      <div class="fg"><span class="fl">Adaptação / Tradução por</span><input type="text" id="f-adapter" placeholder="Ivan Moriá Borges" value="Ivan Moriá Borges"/></div>
+      <div class="fg"><span class="fl">Instituição</span><input type="text" id="f-inst" placeholder="UFMG" value="UFMG"/></div>
+    </div>
     <div class="row2">
       <div class="fg"><span class="fl">Arquivo cap. anterior</span><input type="text" id="f-ph" placeholder="cap32.html"/></div>
       <div class="fg"><span class="fl">Título cap. anterior (EN)</span><input type="text" id="f-pl" placeholder="Ch. 32 · The Profiles"/></div>
@@ -179,6 +187,20 @@ hr.dv{border:none;border-top:1px solid var(--rule);margin:18px 0}
 'use strict';
 var sc = 0, html = '';
 
+// Update top-bar brand live
+function updateBrand() {
+  var a = document.getElementById('f-adapter');
+  var i = document.getElementById('f-inst');
+  if (a) document.getElementById('brand-adapter').textContent = a.value || 'Ivan Moriá Borges';
+  if (i) document.getElementById('brand-inst').textContent = i.value || 'UFMG';
+}
+document.addEventListener('DOMContentLoaded', function() {
+  var fa = document.getElementById('f-adapter');
+  var fi = document.getElementById('f-inst');
+  if (fa) fa.addEventListener('input', updateBrand);
+  if (fi) fi.addEventListener('input', updateBrand);
+});
+
 function addSec(t, x) {
   t = t || ''; x = x || '';
   var id = ++sc;
@@ -230,6 +252,10 @@ function collect() {
     tlen:  document.getElementById('f-tlen').value.trim(),
     lead:  document.getElementById('f-lead').value.trim(),
     pages: document.getElementById('f-pages').value.trim(),
+    bookauthor: document.getElementById('f-bookauthor').value.trim() || 'Kenneth E. Bruscia',
+    year:  document.getElementById('f-year').value.trim() || '1987',
+    adapter: document.getElementById('f-adapter').value.trim() || 'Ivan Moriá Borges',
+    inst:  document.getElementById('f-inst').value.trim() || 'UFMG',
     ph:    document.getElementById('f-ph').value.trim(),
     pl:    document.getElementById('f-pl').value.trim(),
     nh:    document.getElementById('f-nh').value.trim(),
@@ -334,7 +360,7 @@ function buildPrompt(d) {
   var quoteBlock = (d.qe && d.qen)
     ? '\n\nPULL QUOTE (EN): "' + d.qen + '" [' + d.qp + ']' : '';
 
-  return 'Voce e um gerador de paginas HTML academicas bilingues PT/EN para o projeto IAPs de Kenneth Bruscia.\n\n'
+  return 'Voce e um gerador de paginas HTML academicas bilingues PT/EN para o projeto IAPs de ' + d.bookauthor + '.\n\n'
     + 'DADOS DO CAPITULO:\n'
     + 'Unidade/Capitulo: ' + d.unit + '\n'
     + 'Titulo EN: ' + d.tlen + '\n'
@@ -347,22 +373,22 @@ function buildPrompt(d) {
     + 'INSTRUCOES:\n\n'
     + '1. Traduza TODO o conteudo ingles para portugues brasileiro fluente e academico.\n\n'
     + '2. Gere HTML COMPLETO com esta estrutura:\n'
-    + 'DOCTYPE html > html[lang=pt] > head (charset utf-8, viewport, title "IAPs · UNIDADE · TITULO_PT · Bruscia 1987", Google Fonts Cormorant Garamond + DM Mono + Libre Baskerville, link href=iaps.css) + body[class=lang-pt]\n\n'
+    + 'DOCTYPE html > html[lang=pt] > head (charset utf-8, viewport, title "IAPs · UNIDADE · TITULO_PT · ' + d.bookauthor + ' ' + d.year + '", Google Fonts Cormorant Garamond + DM Mono + Libre Baskerville, link href=iaps.css) + body[class=lang-pt]\n\n'
     + '3. Dentro do body na ordem:\n'
     + 'a) a.skip-link data-lang=pt href=#main-content "Ir para o conteudo"\n'
     + 'b) a.skip-link data-lang=en href=#main-content "Skip to content"\n'
     + 'c) div#progress-bar aria-hidden=true\n'
     + 'd) div#read-tip aria-live=polite role=status\n'
     + 'e) nav#vtoc: um div.vtoc-dot por secao com data-href=#sec-N, contendo span.vtoc-dot-label[data-lang=pt] "N TITULO_PT", span.vtoc-dot-label[data-lang=en] "N TITULO_EN", span.vtoc-dot-pip\n'
-    + 'f) nav.top-nav[role=navigation]: div.nav-brand aria-hidden (IAPs + span data-lang=pt/en autoria Ivan Moria Borges UFMG 2026) + div.nav-controls com audio-controls (btn#btn-play onclick=ttsTogglePlay() svg play/stop, btn#btn-pause onclick=ttsTogglePause() style=display:none svg pause/resume, select#speed-sel.speed-select onchange=ttsSpeedChange() opcoes 0.7x 0.85x 1x 1.2x 1.5x) + div.lang-toggle (button.lang-btn.active lang=pt onclick=setLang(pt) PT, button.lang-btn lang=en onclick=setLang(en) EN)\n'
-    + 'g) header.hero[role=banner]: div.hero-eyebrow bilíngue, h1.hero-title bilíngue com EM nas palavras-chave, p.hero-sub "IAPs · Improvisation Assessment Profiles", p.hero-lead bilíngue, div.hero-meta com 5 chips: Autor Kenneth E. Bruscia, Livro, Publicacao 1987, Paginas, Adaptacao Ivan Moria Borges\n'
+    + 'f) nav.top-nav[role=navigation]: div.nav-brand aria-hidden (IAPs + span data-lang=pt/en autoria ' + d.adapter + ' ' + d.inst + ' ' + d.year + ') + div.nav-controls com audio-controls (btn#btn-play onclick=ttsTogglePlay() svg play/stop, btn#btn-pause onclick=ttsTogglePause() style=display:none svg pause/resume, select#speed-sel.speed-select onchange=ttsSpeedChange() opcoes 0.7x 0.85x 1x 1.2x 1.5x) + div.lang-toggle (button.lang-btn.active lang=pt onclick=setLang(pt) PT, button.lang-btn lang=en onclick=setLang(en) EN)\n'
+    + 'g) header.hero[role=banner]: div.hero-eyebrow bilíngue, h1.hero-title bilíngue com EM nas palavras-chave, p.hero-sub "IAPs · Improvisation Assessment Profiles", p.hero-lead bilíngue, div.hero-meta com 5 chips: Autor ' + d.bookauthor + ', Livro, Publicacao ' + d.year + ', Paginas, Adaptacao ' + d.adapter + '\n'
     + 'h) main#main-content.page-body com todas as secoes\n'
     + 'i) nav.chapter-nav\n'
     + 'j) footer\n'
     + 'k) script src=iaps.js\n\n'
-    + '4. CADA SECAO: section.section[id=sec-N] > h2.sec-title[data-lang=pt] + h2.sec-title[data-lang=en] + div[data-lang=en] com paragrafos class=rp + div[data-lang=pt] com paragrafos class=rp. Para ### cria h3.subsec-title data-lang=pt e h3.subsec-title data-lang=en. Pull quote: figure.pull-quote com blockquote data-lang=pt, blockquote data-lang=en, figcaption cite Bruscia 1987.\n\n'
+    + '4. CADA SECAO: section.section[id=sec-N] > h2.sec-title[data-lang=pt] + h2.sec-title[data-lang=en] + div[data-lang=en] com paragrafos class=rp + div[data-lang=pt] com paragrafos class=rp. Para ### cria h3.subsec-title data-lang=pt e h3.subsec-title data-lang=en. Pull quote: figure.pull-quote com blockquote data-lang=pt, blockquote data-lang=en, figcaption cite ' + d.bookauthor + ' ' + d.year + '.\n\n'
     + '5. CHAPTER NAV: nav.chapter-nav > a.chapter-nav-prev (se vazio: aria-disabled=true, opacity:.4, pointer-events:none) + div.chapter-nav-center + a.chapter-nav-next. Cada link: span.chapter-nav-arrow + span.chapter-nav-meta com span.chapter-nav-label bilíngue e span.chapter-nav-title bilíngue.\n\n'
-    + '6. FOOTER bilíngue com referencia Bruscia 1987 e Ivan Moria Borges.\n\n'
+    + '6. FOOTER bilíngue com referencia ' + d.bookauthor + ' ' + d.year + ' e ' + d.adapter + '.\n\n'
     + '7. HTML 100% completo, sem truncar, sem markdown, comecando exatamente com <!DOCTYPE html>.';
 }
 
