@@ -121,11 +121,11 @@ const TTS = (() => {
   }
 
   /* ── seletor de elementos legíveis ── */
-  const READABLE_SEL =
-    'h2.sec-title, h3.subsec-title, .rp, .profile-row, .step-item, ' +
-    '.scales-list li, .i-list li, ' +
+  const READABLE_SEL = '.rp, h2.sec-title, h3.subsec-title, ' +
     '.levels-table thead th, .levels-table tbody td, ' +
-    '.grad-chip, .pull-quote blockquote, figure.media-figure figcaption';
+    '.profile-row, .step-item, .scales-list li, .i-list li, ' +
+    '.grad-chip, .pull-quote blockquote, figure.media-figure figcaption, ' +
+    '.note, aside.tip';
 
   function getLang() {
     const cls = document.body.className.match(/lang-([a-z]{2})/);
@@ -156,8 +156,31 @@ const TTS = (() => {
     if (el.tagName === 'H2' && el.classList.contains('sec-title'))
       return el.textContent.trim();
 
-    if (el.tagName === 'H3' && el.classList.contains('subsec-title'))
+    if (el.tagName === 'H3')
       return el.textContent.trim();
+
+    if (el.tagName === 'H4')
+      return el.textContent.trim();
+
+    /* latex-block: converte LaTeX em fala legível */
+    if (el.classList && el.classList.contains('latex-block')) {
+      return _latexToSpeech(el.dataset.latex || el.textContent.trim());
+    }
+
+    /* pula elementos sem texto */
+    if (el.tagName === 'HR' || el.tagName === 'BR') return '';
+
+    /* LI inline: formata checklist */
+    if (el.tagName === 'LI' && !el.closest('.scales-list') && !el.closest('.i-list')) {
+      const t = _cleanTTS(el);
+      if (t.startsWith('☐')) return 'Tarefa: ' + t.replace('☐','').trim();
+      if (/✓/.test(t))       return t.replace(/\s*✓\s*$/, '') + '. Concluída.';
+      return t;
+    }
+
+    if (el.tagName === 'BLOCKQUOTE') return _cleanTTS(el);
+    if (el.tagName === 'DIV' || el.tagName === 'ASIDE') return _cleanTTS(el);
+
 
     if (el.classList.contains('profile-row')) {
       const lbl   = el.querySelector('.profile-name-label')?.textContent?.trim() || '';
@@ -199,15 +222,72 @@ const TTS = (() => {
       if (s) return s.textContent.trim() + ': ' + el.textContent.replace(s.textContent,'').trim();
     }
 
-    return el.textContent.trim();
+    return _cleanTTS(el);
+  }
+
+  /* converte LaTeX em português legível */
+  function _latexToSpeech(src) {
+    if (!src) return 'equação';
+    let s = src.trim();
+    s = s.replace(/\\begin\{pmatrix\}([\s\S]*?)\\end\{pmatrix\}/g, 'matriz $1');
+    s = s.replace(/\\begin\{[a-z*]+\}([\s\S]*?)\\end\{[a-z*]+\}/g, '$1');
+    s = s.replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, '$1 sobre $2');
+    s = s.replace(/\\sqrt\[([^\]]+)\]\{([^}]+)\}/g, 'raiz $1 de $2');
+    s = s.replace(/\\sqrt\{([^}]+)\}/g, 'raiz quadrada de $1');
+    s = s.replace(/\^\{([^}]+)\}/g, ' elevado a $1');
+    s = s.replace(/\^([^\s{])/g, ' elevado a $1');
+    s = s.replace(/_\{([^}]+)\}/g, ' índice $1');
+    s = s.replace(/_([^\s{])/g, ' índice $1');
+    s = s.replace(/\\sum(?:_\{([^}]*)\})?(?:\^\{([^}]*)\})?/g, 'somatório de $1 até $2');
+    s = s.replace(/\\int(?:_\{([^}]*)\})?(?:\^\{([^}]*)\})?/g, 'integral de $1 até $2');
+    s = s.replace(/\\lim(?:_\{([^}]*)\})?/g, 'limite quando $1');
+    const sym = {alpha:'alfa',beta:'beta',gamma:'gama',delta:'delta',epsilon:'épsilon',
+      zeta:'zeta',eta:'eta',theta:'teta',iota:'iota',kappa:'capa',lambda:'lambda',
+      mu:'mu',nu:'nu',xi:'xi',pi:'pi',rho:'rô',sigma:'sigma',tau:'tau',
+      upsilon:'úpsilon',phi:'fi',chi:'qui',psi:'psi',omega:'ômega',
+      Alpha:'Alfa',Beta:'Beta',Gamma:'Gama',Delta:'Delta',Sigma:'Sigma',Omega:'Ômega',
+      times:'vezes',cdot:'vezes',div:'dividido por',pm:'mais ou menos',
+      infty:'infinito',partial:'parcial',nabla:'nabla',
+      approx:'aproximadamente',neq:'diferente de',leq:'menor ou igual a',geq:'maior ou igual a',
+      in:'pertence a',notin:'não pertence a',subset:'subconjunto de',
+      forall:'para todo',exists:'existe',land:'e',lor:'ou',
+      to:'tende a',rightarrow:'seta direita',leftarrow:'seta esquerda',
+      vec:'vetor de',hat:'chapéu de',dot:'derivada de',tilde:'til de',
+      overline:'barra sobre',underline:'sublinhado'};
+    s = s.replace(/\\([a-zA-Z]+)/g, (m,w) => sym[w] !== undefined ? sym[w] : w);
+    s = s.replace(/[{}\\]/g,' ').replace(/\s+/g,' ').trim();
+    return s || 'equação';
+  }
+
+  /* extrai texto limpo — remove KaTeX renderizado, converte equações */
+  function _cleanTTS(el) {
+    const clone = el.cloneNode(true);
+    clone.querySelectorAll('svg').forEach(e => e.remove());
+    /* KaTeX: usa annotation como fonte LaTeX */
+    clone.querySelectorAll('.katex').forEach(k => {
+      const ann = k.querySelector('annotation');
+      const spoken = ann ? _latexToSpeech(ann.textContent) : '';
+      k.replaceWith(document.createTextNode(' ' + spoken + ' '));
+    });
+    /* span.tts-latex escondido com data-latex */
+    clone.querySelectorAll('.tts-latex').forEach(s => {
+      s.replaceWith(document.createTextNode(' ' + _latexToSpeech(s.dataset.latex||'') + ' '));
+    });
+    let t = clone.textContent || '';
+    t = t.replace(/\$\$[\s\S]*?\$\$/g,'').replace(/\$[^$\n]*?\$/g,'');
+    t = t.replace(/\u00a0/g,' ');
+    return t.replace(/\s+/g,' ').trim();
   }
 
   /* ── elementos que suportam highlight palavra a palavra ── */
   function canHighlight(el) {
+    if (el.tagName === 'HR' || el.tagName === 'BR') return false;
+    /* qualquer elemento com .rp já é highlightable;
+       mais os elementos nativos do iaps que não têm .rp */
     return el.classList.contains('rp')
-      || el.classList.contains('subsec-title')
+      || el.classList.contains('note')
+      || el.tagName === 'ASIDE'
       || el.classList.contains('sec-title')
-      || el.tagName === 'BLOCKQUOTE'
       || el.tagName === 'FIGCAPTION'
       || el.tagName === 'TH'
       || el.tagName === 'TD';
@@ -243,9 +323,12 @@ const TTS = (() => {
       return;
     }
 
-    /* para os demais, substitui innerHTML normalmente */
+    /* usa getText() — retorna texto limpo (sem KaTeX, sem $) que foi falado */
+    const spokenText = getText(el);
+    if (!spokenText) return;
+    el._ttsRaw = spokenText;
     let i = 0, html = '';
-    for (const tok of el.textContent.split(/(\s+)/))
+    for (const tok of spokenText.split(/(\s+)/))
       html += /\S/.test(tok) ? '<span class="w" data-i="' + (i++) + '">' + tok + '</span>' : tok;
     el.innerHTML = html;
   }
@@ -311,10 +394,8 @@ const TTS = (() => {
     utt.rate  = parseFloat(document.getElementById('speed-sel').value) || 1;
 
     if (canHighlight(el)) {
-      /* para TD/TH usamos o rawText do overlay; para outros, textContent direto */
-      const raw = (el.tagName === 'TD' || el.tagName === 'TH')
-        ? (el._ttsRaw || getText(el))   /* apenas o texto da célula, sem o prefixo do cabeçalho */
-        : el.textContent;
+      /* raw = texto efectivamente falado */
+      const raw = el._ttsRaw || el.textContent;
 
       /* offset: para TD, getText() prefixa "Coluna: "; o charIndex da API começa
          no início do utterance, então precisamos calcular o offset do prefixo */
@@ -327,9 +408,7 @@ const TTS = (() => {
         const ci = evt.charIndex - prefix;   /* ajusta pelo prefixo do cabeçalho */
         if (ci < 0) return;                  /* ainda lendo o prefixo */
 
-        const container = (el.tagName === 'TD' || el.tagName === 'TH')
-          ? el._ttsOverlay
-          : el;
+        const container = el._ttsOverlay || el;
         if (!container) return;
 
         let wi = 0, pos = 0;
@@ -412,10 +491,11 @@ document.addEventListener('click', e => {
   if (Math.abs(e.clientX - _pdX) > 5 || Math.abs(e.clientY - _pdY) > 5) return;
 
   const el = e.target.closest(
-    'h2.sec-title, h3.subsec-title, .rp, .profile-row, .step-item, ' +
-    '.scales-list li, .i-list li, ' +
+    '.rp, h2.sec-title, h3.subsec-title, ' +
     '.levels-table thead th, .levels-table tbody td, ' +
-    '.grad-chip, .pull-quote blockquote, figure.media-figure figcaption'
+    '.profile-row, .step-item, .scales-list li, .i-list li, ' +
+    '.grad-chip, .pull-quote blockquote, figure.media-figure figcaption, ' +
+    '.note, aside.tip'
   );
   if (!el) return;
 

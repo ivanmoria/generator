@@ -258,6 +258,49 @@ h3.subsec-title {
   padding-bottom: .3em;
 }
 
+/* ── h4 sub-subtítulo ── */
+h4.rp {
+  font-family: var(--font-serif); font-size: .98rem; font-weight: 600;
+  color: var(--ink-soft); margin-top: 1.4em; margin-bottom: .4em;
+}
+
+/* ── blockquote inline ── */
+blockquote.rp {
+  border-left: 3px solid var(--accent-soft);
+  margin: .8em 0 .8em 0; padding: .4em .9em;
+  font-style: italic; color: var(--ink-soft);
+  background: rgba(122,59,30,.03); border-radius: 0 4px 4px 0;
+}
+
+/* ── nota e dica ── */
+.note, .tip {
+  border-radius: 0 4px 4px 0; padding: 10px 14px;
+  margin: .9em 0; font-size: .9rem; line-height: 1.7;
+  position: relative;
+}
+.note {
+  border-left: 3px solid var(--accent-soft);
+  background: rgba(122,59,30,.05); color: var(--ink-soft);
+}
+.tip {
+  border-left: 3px solid rgba(45,106,45,.5);
+  background: rgba(45,106,45,.05); color: var(--ink-soft);
+}
+.note::before { content: '⚠'; position: absolute; left: -1.4em; top: 10px; font-size: .8rem; opacity: .5; }
+.tip::before  { content: '💡'; position: absolute; left: -1.4em; top: 8px; font-size: .8rem; opacity: .7; }
+
+/* ── latex block ── */
+.latex-block {
+  overflow-x: auto; margin: 1.1em 0;
+  text-align: center; padding: .6em 0;
+}
+.latex-block.rp-active { background: var(--hl-para) !important; outline: 2px solid rgba(122,59,30,.2); border-radius: 3px; }
+
+/* ── divs de alinhamento / recuo ── */
+div.rp[style] {
+  margin-bottom: .8em;
+}
+
 /* ═══ READABLE PARAGRAPHS ════════════════════════════════════ */
 .rp {
   font-size: .965rem; line-height: 1.84; color: var(--ink-soft);
@@ -284,7 +327,20 @@ h3.subsec-title.rp-active {
 h2.sec-title, h3.subsec-title { cursor: pointer; }
 h2.sec-title .w, h3.subsec-title .w { border-radius: 2px; padding: 0 1px; display: inline; }
 h2.sec-title .w.w-on, h3.subsec-title .w.w-on { background: var(--hl-word); }
-.profile-row.rp-active, .step-item.rp-active,
+
+/* ── word highlight para todos os elementos .rp ── */
+.rp .w         { border-radius: 2px; padding: 0 1px; display: inline; }
+.rp .w.w-on    { background: var(--hl-word); }
+
+/* ── tts-word-overlay (para .rp com KaTeX/HTML interno) ── */
+.tts-word-overlay {
+  position: absolute; inset: 0;
+  pointer-events: none; overflow: hidden; opacity: 0;
+}
+.tts-word-overlay .w       { border-radius: 2px; padding: 0 1px; display: inline; color: transparent; }
+.tts-word-overlay .w.w-on  { background: var(--hl-word); color: transparent; }
+
+
 .scales-list li.rp-active, .i-list li.rp-active {
   background: var(--hl-para) !important;
   outline: 2px solid rgba(122,59,30,.2);
