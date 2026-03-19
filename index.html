@@ -403,13 +403,13 @@
 
       <!-- Preview em tempo real -->
       <div id="prefix-live-preview" style="font-family:var(--font-serif);font-size:1.35rem;line-height:1.2;margin-bottom:10px;padding:6px 10px;background:var(--paper);border-radius:4px;border:1px solid var(--rule);min-height:2.2em;display:flex;align-items:center;gap:.3em;flex-wrap:wrap">
-        <span id="prefix-preview-span" style="color:#7a3b1e;font-weight:700">T-mirim ·</span>
+        <span id="prefix-preview-span" style="color:#7a3b1e;font-weight:700">Generator ·</span>
         <span id="main-preview-span" style="color:#1a1714">Título do capítulo</span>
       </div>
 
       <!-- Linha 1: texto + cores -->
       <div style="display:flex;align-items:center;gap:5px;margin-bottom:7px">
-        <input type="text" id="f-title-prefix" data-bi-id="f-title-prefix" placeholder="ex: T-mirim ·"
+        <input type="text" id="f-title-prefix" data-bi-id="f-title-prefix" placeholder="ex: Generator ·"
           style="flex:1;font-family:var(--font-body);font-size:.9rem;padding:5px 8px;border:1px solid var(--rule-strong);border-radius:3px;background:var(--paper);color:var(--ink)"
           oninput="onHeroStyleChange();_updatePrefixPreview();if(!_fieldData['f-title-prefix'])_fieldData['f-title-prefix']={};_fieldData['f-title-prefix'][_editLang]=this.value;"/>
         <label class="tcc-pick" title="Cor do prefixo" style="width:26px;height:26px;flex-shrink:0">
