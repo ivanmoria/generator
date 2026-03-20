@@ -575,6 +575,59 @@
       </div>
     </div>
 
+    <!-- ── CRÉDITOS DO CABEÇALHO (apenas admin) ── -->
+    <div id="admin-credits-section" style="display:none;margin-top:14px;border-top:1px solid var(--rule);padding-top:12px">
+
+      <div class="fg">
+        <span class="fl">Cabeçalho do HTML gerado</span>
+        <select class="frm" id="f-credit-mode" onchange="(function(v){document.getElementById('credit-custom-fields').style.display=v==='custom'?'':'none';})(this.value)">
+          <option value="default">Padrão (Adaptado de… por Ivan Moriá Borges)</option>
+          <option value="custom">Personalizado</option>
+          <option value="none">Sem créditos</option>
+        </select>
+      </div>
+
+      <div id="credit-custom-fields" style="display:none">
+
+        <div class="fg">
+          <span class="fl">Texto do crédito no topo</span>
+          <input type="text" id="f-credit-text" placeholder="ex: Anais do XV Congresso · Organizado por Fulano"/>
+        </div>
+
+        <div class="fg">
+          <span class="fl">Rótulo do chip no cabeçalho</span>
+          <input type="text" id="f-credit-chip-label" placeholder="ex: Anais do Congresso 2025"/>
+        </div>
+
+        <div class="fg">
+          <span class="fl">Link do chip <span style="font-family:var(--font-mono);font-size:8px;opacity:.45;font-weight:normal;text-transform:none;letter-spacing:0;background:var(--paper-deep);padding:1px 5px;border-radius:2px">opcional</span></span>
+          <input type="text" id="f-credit-chip-url" placeholder="https://…"/>
+        </div>
+
+        <div style="border-top:1px solid var(--rule);margin-top:10px;padding-top:10px">
+          <span class="fl" style="margin-bottom:6px;display:block">Popup ao clicar no chip</span>
+
+          <div class="fg">
+            <span class="fl" style="font-weight:normal;opacity:.7">Nome / título</span>
+            <input type="text" id="f-popup-name" placeholder="ex: Comitê Científico"/>
+          </div>
+          <div class="fg">
+            <span class="fl" style="font-weight:normal;opacity:.7">Descrição</span>
+            <input type="text" id="f-popup-desc" placeholder="ex: XV Congresso Brasileiro de Musicoterapia"/>
+          </div>
+          <div class="fg">
+            <span class="fl" style="font-weight:normal;opacity:.7">E-mail de contato <span style="font-family:var(--font-mono);font-size:8px;opacity:.45;font-weight:normal;text-transform:none;letter-spacing:0;background:var(--paper-deep);padding:1px 5px;border-radius:2px">opcional</span></span>
+            <input type="text" id="f-popup-email" placeholder="ex: contato@congresso.org"/>
+          </div>
+          <div class="fg">
+            <span class="fl" style="font-weight:normal;opacity:.7">Site <span style="font-family:var(--font-mono);font-size:8px;opacity:.45;font-weight:normal;text-transform:none;letter-spacing:0;background:var(--paper-deep);padding:1px 5px;border-radius:2px">opcional</span></span>
+            <input type="text" id="f-popup-url" placeholder="https://congresso.org"/>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
     </div><!-- end meta-sidebar-inner -->
     </div><!-- end sb-panel-meta -->
 
