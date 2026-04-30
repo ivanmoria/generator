@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Generator · Ivan Moriá Borges</title>
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet"/>
+
+<!-- KaTeX -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css" crossorigin="anonymous"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js" crossorigin="anonymous"></script>
+
+<!-- Google Sign-In (GSI) -->
+<script src="https://accounts.google.com/gsi/client"></script>
+
+<!-- Supabase JS (sem bundler) -->
+<!-- Não precisamos do SDK completo — auth.js usa fetch nativo -->
+
+<!-- Estilos -->
+<link rel="stylesheet" href="css/main.css"/>
+<link rel="stylesheet" href="css/theme.css"/>
+</head>
+<body>
+
+<!-- ════ WELCOME SCREEN ════ -->
+<div id="welcome-screen">
+  <!-- grid de fundo -->
+  <div style="position:absolute;inset:0;background-image:linear-gradient(var(--rule) 1px,transparent 1px),linear-gradient(90deg,var(--rule) 1px,transparent 1px);background-size:44px 44px;animation:wGridPulse 4s ease-in-out infinite;pointer-events:none"></div>
+  <!-- brilho central -->
+  <div style="position:absolute;width:500px;height:500px;background:radial-gradient(circle,rgba(122,59,30,.07) 0%,transparent 68%);border-radius:50%;animation:wGlow 3.5s ease-in-out infinite;pointer-events:none"></div>
+
+  <div style="position:relative;text-align:center;padding:44px 32px">
+    <!-- cantos decorativos -->
+    <div class="ws-corner tl"></div><div class="ws-corner tr"></div>
+    <div class="ws-corner bl"></div><div class="ws-corner br"></div>
+
+    <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:6px;text-transform:uppercase;color:var(--accent-soft);margin-bottom:22px;animation:wFadeUp .8s ease both">Ivan Moriá Borges · 2026</div>
+
+    <div id="ws-main-title" class="ws-title-hero">
+      CAPÍTULO<br><em style="color:var(--accent);text-shadow:0 0 32px rgba(122,59,30,.3)">GENERATOR</em>
+    </div>
+
+    <div id="ws-subtitle" style="font-family:var(--font-mono);font-size:11px;letter-spacing:3px;color:var(--ink-muted);margin-top:18px;animation:wFadeUp .8s ease .2s both">GERADOR DE PÁGINAS COM RECURSO DE AUDIODESCRIÇÃO</div>
+
+    <!-- Selecione o idioma -->
+    <div style="font-family:var(--font-mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-muted);margin-top:16px;animation:wFadeUp .8s ease .22s both" id="ws-lang-label">Selecione o idioma da interface</div>
+
+    <!-- Bandeiras de idioma da interface -->
+    <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:8px;animation:wFadeUp .8s ease .25s both" id="ws-lang-flags">
+      <button onclick="wsSetLang('pt')" data-wslang="pt" class="ws-flag-btn ws-flag-active" title="Português">🇧🇷</button>
+      <button onclick="wsSetLang('en')" data-wslang="en" class="ws-flag-btn" title="English">🇺🇸</button>
+      <button onclick="wsSetLang('es')" data-wslang="es" class="ws-flag-btn" title="Español">🇪🇸</button>
+      <button onclick="wsSetLang('fr')" data-wslang="fr" class="ws-flag-btn" title="Français">🇫🇷</button>
+      <button onclick="wsSetLang('de')" data-wslang="de" class="ws-flag-btn" title="Deutsch">🇩🇪</button>
+      <button onclick="wsSetLang('it')" data-wslang="it" class="ws-flag-btn" title="Italiano">🇮🇹</button>
+      <button onclick="wsSetLang('ja')" data-wslang="ja" class="ws-flag-btn" title="日本語">🇯🇵</button>
+      <button onclick="wsSetLang('zh')" data-wslang="zh" class="ws-flag-btn" title="中文">🇨🇳</button>
+      <button onclick="wsSetLang('ru')" data-wslang="ru" class="ws-flag-btn" title="Русский">🇷🇺</button>
+      <button onclick="wsSetLang('ko')" data-wslang="ko" class="ws-flag-btn" title="한국어">🇰🇷</button>
+      <button onclick="wsSetLang('ar')" data-wslang="ar" class="ws-flag-btn" title="العربية">🇸🇦</button>
+    </div>
+
+    <div style="width:1px;height:44px;background:linear-gradient(transparent,var(--accent-soft),transparent);margin:28px auto;animation:wFadeUp .8s ease .3s both"></div>
+
+    <div style="display:flex;gap:24px;justify-content:center;flex-wrap:wrap;font-family:var(--font-mono);font-size:9px;letter-spacing:2px;color:var(--ink-muted);animation:wFadeUp .8s ease .35s both">
+      <span data-wsfeatures>SEÇÕES · TABELAS · GRADIENTES · LATEX · TTS · EXPORTAÇÃO HTML</span>
+    </div>
+
+    <div style="margin-top:44px;animation:wFadeUp .8s ease .45s both">
+      <div id="ws-start-btn" style="display:inline-block;border:1px solid rgba(122,59,30,.32);padding:13px 40px;border-radius:3px;font-family:var(--font-mono);font-size:11px;letter-spacing:5px;text-transform:uppercase;color:var(--accent);background:rgba(122,59,30,.04);animation:wPulse 2s ease-in-out 1s infinite">CLIQUE PARA COMEÇAR</div>
+    </div>
+  </div>
+
+  <div style="position:absolute;bottom:18px;font-family:var(--font-mono);font-size:8px;color:var(--rule-strong);letter-spacing:3px">v2.0 · BETA</div>
+</div>
+
+<!-- ════ SUPPORT SCREEN — login ════ -->
+<div id="support-screen">
+  <div style="position:absolute;inset:0;background-image:linear-gradient(var(--rule) 1px,transparent 1px),linear-gradient(90deg,var(--rule) 1px,transparent 1px);background-size:44px 44px;pointer-events:none;opacity:.6"></div>
+  <div class="ws-corner tl"></div><div class="ws-corner tr"></div>
+  <div class="ws-corner bl"></div><div class="ws-corner br"></div>
+
+  <div class="sp-inner">
+
+    <div class="sp-hdr">
+      <div style="font-family:var(--font-mono);font-size:8px;letter-spacing:4px;text-transform:uppercase;color:var(--ink-muted);margin-bottom:8px">Ivan Moriá Borges · 2026</div>
+      <div class="sp-title" id="sp-title-main">CHAPTER <em style="color:var(--accent)">GENERATOR</em></div>
+      <div class="sp-sub" id="sp-sub-main">Faça seu login ou explore sem cadastro</div>
+    </div>
+
+    <div class="sp-cols">
+
+      <!-- COLUNA ESQUERDA — Google Sign-In + Try -->
+      <div class="sp-col-qr">
+
+        <div style="font-family:var(--font-mono);font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:12px" id="sp-login-lbl">Entrar com Google</div>
+
+        <!-- Botão Google Sign-In injetado pelo auth.js -->
+        <div id="auth-google-btn" style="margin-bottom:10px;display:flex;justify-content:center"></div>
+
+
+
+        <!-- Divisor -->
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px">
+          <div style="flex:1;height:1px;background:var(--rule)"></div>
+          <span id="sp-or-lbl" style="font-family:var(--font-mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted)">ou</span>
+          <div style="flex:1;height:1px;background:var(--rule)"></div>
+        </div>
+
+        <!-- Código de acesso -->
+        <div style="margin-bottom:12px">
+          <div style="font-family:var(--font-mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:6px" id="sp-code-lbl">Código de acesso</div>
+          <div style="display:flex;gap:6px">
+            <input id="sp-access-code-input" type="text" maxlength="12" placeholder="XXXX-XXXX"
+              style="flex:1;font-family:var(--font-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;background:var(--paper);border:1px solid var(--rule-strong);border-radius:4px;padding:7px 10px;color:var(--ink);outline:none;min-width:0"
+              oninput="this.value=this.value.toUpperCase()"
+              onkeydown="if(event.key==='Enter')redeemAccessCode()"
+            />
+            <button onclick="redeemAccessCode()" class="sp-enter-btn" style="padding:7px 12px;font-size:9px;letter-spacing:2px;animation:none;border-color:var(--accent-soft);color:var(--accent)">OK</button>
+          </div>
+          <div id="sp-code-msg" style="font-family:var(--font-mono);font-size:8px;margin-top:5px;min-height:14px"></div>
+        </div>
+
+        <!-- Divisor 2 -->
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+          <div style="flex:1;height:1px;background:var(--rule)"></div>
+          <span style="font-family:var(--font-mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted)" id="sp-or2-lbl">ou</span>
+          <div style="flex:1;height:1px;background:var(--rule)"></div>
+        </div>
+
+        <!-- Botão Try — acesso anônimo sem login -->
+        <button id="sp-try-btn" onclick="enterAnonymous()" class="sp-enter-btn" style="width:100%;padding:10px;font-size:10px;letter-spacing:4px">
+          Experimentar →
+        </button>
+
+
+        <!-- Mostrado após login bem-sucedido -->
+        <div class="sp-enter" id="sp-enter-wrap" style="margin-top:12px">
+          <button class="sp-enter-btn" id="sp-enter-btn" style="display:none">Entrar no app →</button>
+          <div class="sp-hint" id="sp-enter-hint" style="display:none">ou pressione qualquer tecla</div>
+        </div>
+
+      </div>
+
+      <!-- COLUNA DIREITA — QR Code para compartilhar -->
+      <div class="sp-col-qr" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px">
+
+        <div style="font-family:var(--font-mono);font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-muted)" id="sp-qr-lbl">Compartilhar o app</div>
+
+        <div style="padding:10px;background:#fff;border-radius:8px;border:1px solid var(--accent-soft);box-shadow:0 0 18px rgba(122,59,30,.1);display:inline-block">
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https%3A%2F%2Fivanmoria.github.io%2Fgenerator%2F&color=1a1714&bgcolor=ffffff&margin=4"
+               alt="QR Code" width="180" height="180" style="display:block;border-radius:3px">
+        </div>
+        <div style="font-family:var(--font-mono);font-size:8px;color:var(--ink-muted);letter-spacing:1px;text-align:center">ivanmoria.github.io/generator</div>
+
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<div class="top-bar">
+  <div class="top-bar-row">
+
+    <div class="top-bar-brand">
+      <strong>Generator</strong>
+
+      <span class="tb-dot">·</span>
+
+      <span class="tb-by">by</span>
+
+      <button class="author-link" onclick="toggleProfileModal()" title="Sobre o autor · Contato · Apoiar">
+        Ivan Moriá
+      </button>
+    </div>
+
+    <div class="tb-sep"></div>
+    <!-- Dados: rascunho + arquivo unificado -->
+    <div style="position:relative;display:inline-block" id="dd-dados-wrap">
+      <button id="dd-dados-btn" onclick="toggleDD('dd-dados','dd-dados-btn')" style="background:none;border:1px solid var(--rule-strong);border-radius:3px;font-family:var(--font-mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted);padding:3px 9px;cursor:pointer;height:26px;white-space:nowrap;display:flex;align-items:center;gap:4px" onmouseover="this.style.borderColor='var(--accent-soft)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--rule-strong)';this.style.color='var(--ink-muted)'">💾 <span data-i18n="dados">Dados</span> <span style="font-size:7px;opacity:.6">▾</span></button>
+    </div>
+    <input type="file" id="draft-file-inp" accept=".json" style="display:none" onchange="draftImportFile(this)"/>
+
+    <div class="tb-sep"></div>
+
+    <!-- Toggle modo tradução -->
+    <div class="trans-mode-wrap">
+      <button class="trans-mode-btn active" id="trans-mode-free" onclick="setTransMode('free')" title="Google Translate e outros motores gratuitos" id="trans-mode-free-label">🌐 <span data-i18n="transMode">Tradução</span></button>
+      <button class="trans-mode-btn" id="trans-mode-ai" onclick="setTransMode('ai')" title="Traduzir com IA via API">✦ IA</button>
+    </div>
+    <!-- Controles modo gratuito -->
+    <div id="trans-free-controls" style="display:flex;align-items:center;gap:5px">
+      <!-- Engine sempre Google Translate — select oculto para compatibilidade -->
+      <select class="tb-sel" id="trans-engine" style="display:none">
+        <option value="google_gtx" selected>Google Translate</option>
+      </select>
+    </div>
+    <!-- Controles modo IA -->
+    <div id="trans-ai-controls" style="display:none;align-items:center;gap:5px">
+      <span id="trans-ai-summary" style="font-family:var(--font-mono);font-size:9px;color:var(--ink-muted);white-space:nowrap;max-width:160px;overflow:hidden;text-overflow:ellipsis">Nenhum provedor</span>
+      <button onclick="openAiTransPanel()" style="background:none;border:1px solid var(--rule-strong);border-radius:3px;font-family:var(--font-mono);font-size:8.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-muted);padding:3px 8px;cursor:pointer;height:26px" onmouseover="this.style.borderColor='var(--accent-soft)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--rule-strong)';this.style.color='var(--ink-muted)'"><span data-i18n="config">⚙ Config.</span></button>
+    </div>
+    <button id="btn-trans-all-top" onclick="translateAll()" title="Traduz do idioma selecionado para os outros ativos" style="background:none;border:1px solid rgba(26,92,42,.4);border-radius:3px;font-family:var(--font-mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:#1a5c2a;padding:3px 9px;cursor:pointer;height:26px;white-space:nowrap"><span data-i18n="translateAll">🌐 Traduzir tudo</span></button>
+
+    <div class="tb-sep"></div>
+
+    <!-- Pós-geração: apenas Preview + Exportar -->
+    <div id="tb-post-gen" style="display:none;align-items:center;gap:5px">
+      <button onclick="openModal('preview')" id="btn-preview-top" style="background:var(--accent);color:#fff;border:none;border-radius:3px;font-family:var(--font-mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;padding:3px 10px;height:26px;cursor:pointer;white-space:nowrap"><span data-i18n="preview">◉ Preview</span></button>
+      <div style="position:relative;display:inline-block">
+        <button id="dd-export-btn" onclick="toggleDD('dd-export','dd-export-btn')" style="background:none;border:1px solid var(--rule-strong);border-radius:3px;font-family:var(--font-mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted);padding:3px 10px;height:26px;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:4px" onmouseover="this.style.borderColor='var(--accent-soft)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--rule-strong)';this.style.color='var(--ink-muted)'"><span data-i18n="export">⬇ Exportar</span> <span style="font-size:7px;opacity:.6">▾</span></button>
+      </div>
+      <div class="tb-sep"></div>
+    </div>
+
+    <!-- Auth badge — status only, details in Acesso panel -->
+    <div id="auth-topbar-wrap" style="display:none;align-items:center;gap:4px;flex-shrink:0">
+      <div id="auth-topbar-badge"></div>
+    </div>
+
+    <!-- Acesso — visível apenas no desktop (mobile usa a tab nav) -->
+    <div class="tb-sep desktop-only-flex" style="display:none"></div>
+    <button id="btn-acesso-desktop" onclick="toggleAcessoPanel()" class="desktop-only-flex"
+      style="display:none;background:none;border:1px solid var(--rule-strong);border-radius:3px;font-family:var(--font-mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted);padding:3px 9px;cursor:pointer;height:26px;white-space:nowrap;align-items:center;gap:4px"
+      onmouseover="this.style.borderColor='var(--accent-soft)';this.style.color='var(--accent)'"
+      onmouseout="this.style.borderColor='var(--rule-strong)';this.style.color='var(--ink-muted)'"
+      title="Acesso">
+      <span id="btn-acesso-desktop-lbl">👤 Acesso</span>
+    </button>
+
+    <!-- Gerar -->
+    <div style="margin-left:auto">
+      <button class="btn-gen" id="btn-gen" onclick="gen()" style="padding:5px 16px;font-size:10px;margin:0;width:auto"><span data-i18n="generate">⚡ Gerar HTML</span></button>
+    </div>
+  </div>
+
+  <!-- Linha 2: apenas idiomas — flags scroll, + fixo no final -->
+  <div class="top-bar-row" id="lang-bar-row">
+    <span class="lang-group-label" style="font-family:var(--font-mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted);white-space:nowrap;flex-shrink:0"><span data-i18n="editing">Editando</span>: <strong id="edit-lang-ind" style="color:var(--accent)">EN</strong></span>
+    <div class="tb-sep" style="flex-shrink:0"></div>
+    <!-- scroll area: apenas as bandeiras -->
+    <div id="lang-scroll-inner">
+      <div id="lang-btns-container"></div>
+    </div>
+    <!-- + idioma: sempre fixo no final, fora do scroll -->
+    <button id="btn-add-lang" onclick="toggleAddLangModal()" title="Adicionar idioma" style="background:none;border:1px dashed var(--rule-strong);border-radius:3px;font-family:var(--font-mono);font-size:10px;color:var(--ink-muted);padding:2px 7px;cursor:pointer;height:24px;line-height:1;flex-shrink:0;margin-left:4px" onmouseover="this.style.borderColor='var(--accent-soft)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--rule-strong)';this.style.color='var(--ink-muted)'"><span data-i18n="addLang">＋ idioma</span></button>
+  </div>
+
+  <!-- Menus flutuantes -->
+  <div id="dd-dados" style="display:none;position:fixed;z-index:99000;background:var(--paper-warm);border:1px solid var(--rule-strong);border-radius:4px;box-shadow:0 4px 16px rgba(0,0,0,.22);min-width:210px;overflow:hidden">
+    <div style="padding:5px 14px 4px;font-family:var(--font-mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);border-bottom:1px solid var(--rule)"><span data-i18n="draft">Rascunho</span></div>
+    <button onclick="draftSave();closeDD('dd-dados')" style="display:block;width:100%;text-align:left;background:none;border:none;border-bottom:1px solid var(--rule);font-family:var(--font-mono);font-size:9.5px;letter-spacing:.06em;color:var(--ink-soft);padding:9px 14px;cursor:pointer" onmouseover="this.style.background='var(--paper-deep)'" onmouseout="this.style.background='none'"><span data-i18n="draftSave">💾 Salvar no navegador</span></button>
+    <button onclick="draftLoad();closeDD('dd-dados')" style="display:block;width:100%;text-align:left;background:none;border:none;border-bottom:1px solid var(--rule);font-family:var(--font-mono);font-size:9.5px;letter-spacing:.06em;color:var(--ink-soft);padding:9px 14px;cursor:pointer" onmouseover="this.style.background='var(--paper-deep)'" onmouseout="this.style.background='none'"><span data-i18n="draftLoad">📂 Carregar do navegador</span></button>
+    <div style="padding:5px 14px 4px;font-family:var(--font-mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);border-bottom:1px solid var(--rule)"><span data-i18n="file">Arquivo</span></div>
+    <button onclick="draftExport();closeDD('dd-dados')" style="display:block;width:100%;text-align:left;background:none;border:none;border-bottom:1px solid var(--rule);font-family:var(--font-mono);font-size:9.5px;letter-spacing:.06em;color:var(--ink-soft);padding:9px 14px;cursor:pointer" onmouseover="this.style.background='var(--paper-deep)'" onmouseout="this.style.background='none'"><span data-i18n="exportJson">⬇ Exportar como .json</span></button>
+    <button onclick="draftImportClick();closeDD('dd-dados')" style="display:block;width:100%;text-align:left;background:none;border:none;font-family:var(--font-mono);font-size:9.5px;letter-spacing:.06em;color:var(--ink-soft);padding:9px 14px;cursor:pointer" onmouseover="this.style.background='var(--paper-deep)'" onmouseout="this.style.background='none'"><span data-i18n="importJson">⬆ Importar .json</span></button>
+  </div>
+  <div id="dd-export" style="display:none;position:fixed;z-index:99000;background:var(--paper-warm);border:1px solid var(--rule-strong);border-radius:4px;box-shadow:0 4px 16px rgba(0,0,0,.22);min-width:220px;overflow:hidden">
+    <div style="padding:7px 14px 4px;font-family:var(--font-mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);border-bottom:1px solid var(--rule)"><span data-i18n="exportAs">Exportar como…</span></div>
+    <button onclick="dl();closeDD('dd-export')" style="display:block;width:100%;text-align:left;background:none;border:none;border-bottom:1px solid var(--rule);font-family:var(--font-mono);font-size:9.5px;letter-spacing:.06em;color:var(--ink-soft);padding:9px 14px;cursor:pointer" onmouseover="this.style.background='var(--paper-deep)'" onmouseout="this.style.background='none'"><span data-i18n="exportHtml">⬇ HTML (.html)</span></button>
+    <button onclick="dlPdf();closeDD('dd-export')" style="display:block;width:100%;text-align:left;background:none;border:none;border-bottom:1px solid var(--rule);font-family:var(--font-mono);font-size:9.5px;letter-spacing:.06em;color:var(--ink-soft);padding:9px 14px;cursor:pointer" onmouseover="this.style.background='var(--paper-deep)'" onmouseout="this.style.background='none'">⬇ PDF (.pdf)</button>
+    <button onclick="dlMarkdown();closeDD('dd-export')" style="display:block;width:100%;text-align:left;background:none;border:none;border-bottom:1px solid var(--rule);font-family:var(--font-mono);font-size:9.5px;letter-spacing:.06em;color:var(--ink-soft);padding:9px 14px;cursor:pointer" onmouseover="this.style.background='var(--paper-deep)'" onmouseout="this.style.background='none'"><span data-i18n="exportMd">⬇ Markdown (.md)</span></button>
+    <button onclick="dlLatex();closeDD('dd-export')" style="display:block;width:100%;text-align:left;background:none;border:none;font-family:var(--font-mono);font-size:9.5px;letter-spacing:.06em;color:var(--ink-soft);padding:9px 14px;cursor:pointer" onmouseover="this.style.background='var(--paper-deep)'" onmouseout="this.style.background='none'"><span data-i18n="exportTex">⬇ LaTeX (.tex)</span></button>
+  </div>
+</div>
+
+<!-- Modal de adicionar idioma -->
+<div id="add-lang-modal" onclick="if(event.target===this)toggleAddLangModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9999;align-items:center;justify-content:center">
+  <div style="background:var(--paper-warm);border:1px solid var(--rule-strong);border-radius:8px;padding:20px 24px;width:420px;max-width:92vw;max-height:90vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,.2)">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+      <span style="font-family:var(--font-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);font-weight:bold">Adicionar idioma</span>
+      <button onclick="toggleAddLangModal()" style="background:none;border:none;font-size:16px;color:var(--ink-muted);cursor:pointer;line-height:1;padding:0 2px">✕</button>
+    </div>
+    <div id="add-lang-src-note" style="font-family:var(--font-mono);font-size:9px;color:var(--ink-muted);margin-bottom:12px;padding:5px 8px;background:rgba(26,92,42,.06);border-left:2px solid rgba(26,92,42,.3);border-radius:0 3px 3px 0;line-height:1.6">
+      Ao adicionar, os campos preenchidos em <strong id="add-lang-src-lbl">EN</strong> serão traduzidos automaticamente para o novo idioma.
+    </div>
+    <div style="font-family:var(--font-mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:7px">Idiomas frequentes</div>
+    <div id="lang-favorites" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--rule)"></div>
+    <input id="new-lang-search" placeholder="Buscar outros idiomas…" oninput="filterLangList(this.value)"
+      style="width:100%;font-family:var(--font-body);font-size:13px;padding:7px 10px;border:1px solid var(--rule-strong);border-radius:4px;background:var(--paper);margin-bottom:8px;box-sizing:border-box"/>
+    <div id="lang-list" style="max-height:200px;overflow-y:auto;display:flex;flex-direction:column;gap:1px"></div>
+    <input id="new-lang-code" type="hidden"/><input id="new-lang-flag" type="hidden"/><input id="new-lang-label" type="hidden"/>
+  </div>
+</div>
+
+
+
+<button class="meta-toggle-btn" id="meta-toggle-btn" onclick="toggleMeta()" title="Mostrar/ocultar metadados">◧</button>
+
+<!-- ══ PAINEL DE TRADUÇÃO POR IA ══ -->
+<div id="ai-trans-modal" onclick="if(event.target===this)closeAiTransPanel()">
+  <div id="ai-trans-panel">
+    <div class="ai-panel-hdr">
+      <span class="ai-panel-title" data-i18n="aiTransTitle">✦ Tradução por IA</span>
+      <button class="ai-panel-close" onclick="closeAiTransPanel()">✕</button>
+    </div>
+    <div class="ai-panel-body">
+
+      <!-- Provedor -->
+      <div>
+        <div class="ai-panel-section-label" data-i18n="aiStep1">1 · Escolha o provedor</div>
+        <div class="ai-provider-grid" id="ai-provider-grid"><!-- injetado via JS --></div>
+      </div>
+
+      <!-- Modelo -->
+      <div id="ai-model-row" style="display:none">
+        <div class="ai-panel-section-label" data-i18n="aiStep2">2 · Modelo</div>
+        <select class="ai-model-sel" id="ai-model-sel"></select>
+      </div>
+
+      <!-- API Key -->
+      <div id="ai-key-row" style="display:none">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px">
+          <div class="ai-panel-section-label" style="margin:0" data-i18n="aiStep3">3 · API Key</div>
+          <a id="ai-key-link" href="#" target="_blank" rel="noopener" class="ai-provider-link" style="font-size:11px" data-i18n="getKeyLink">Obter chave ↗</a>
+        </div>
+        <div class="ai-key-wrap">
+          <input type="password" class="ai-key-inp" id="ai-key-inp" placeholder="Cole sua chave aqui…" autocomplete="off" spellcheck="false" oninput="_aiKeySave()"/>
+          <button class="ai-key-toggle" onclick="_aiKeyToggleVis()" id="ai-key-toggle-btn" data-i18n="showKey">mostrar</button>
+        </div>
+        <div style="font-family:var(--font-body);font-size:11px;color:var(--ink-muted);margin-top:6px;line-height:1.6" data-i18n="aiKeyNote">
+          🔒 A chave fica salva <strong>localmente no seu navegador</strong> e nunca é enviada a nenhum servidor além da API escolhida.
+        </div>
+      </div>
+
+      <!-- Progresso -->
+      <div class="ai-trans-progress" id="ai-trans-progress">
+        <div class="ai-panel-note" id="ai-trans-status" style="font-size:12px" data-i18n="aiWaiting">Aguardando…</div>
+        <div class="ai-progress-bar-wrap"><div class="ai-progress-bar" id="ai-progress-bar"></div></div>
+        <div class="ai-progress-label" id="ai-progress-label"></div>
+      </div>
+
+      <!-- Log de erros -->
+      <div id="ai-error-log-wrap" style="display:none">
+        <div class="ai-panel-section-label" style="color:var(--error)" data-i18n="aiErrFound">⚠ Erros encontrados</div>
+        <div class="ai-error-log show" id="ai-error-log"></div>
+      </div>
+
+      <!-- Nota -->
+      <div class="ai-panel-note" data-i18n="aiPreserveNote">
+        A IA traduz preservando <strong>equações LaTeX</strong>, marcadores <code>###</code> e termos técnicos. Campos já preenchidos no idioma destino <strong>não são sobrescritos</strong>.
+      </div>
+
+    </div>
+    <div class="ai-panel-actions">
+      <button id="btn-ai-translate" onclick="translateAllAI()" style="flex:1;background:var(--accent);color:#fff;border:none;border-radius:5px;font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:10px 16px;cursor:pointer;transition:background .15s" onmouseover="this.style.background='#5e2c15'" onmouseout="this.style.background='var(--accent)'" data-i18n="aiTransBtn">✦ Traduzir tudo com IA</button>
+      <button onclick="closeAiTransPanel()" style="background:none;border:1px solid var(--rule-strong);border-radius:5px;font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted);padding:10px 14px;cursor:pointer" onmouseover="this.style.borderColor='var(--accent-soft)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--rule-strong)';this.style.color='var(--ink-muted)'" data-i18n="closeBtn">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<div class="main-layout">
+
+  <!-- ══ PAINEL METADADOS (sidebar colapsável) ══ -->
+  <div class="meta-sidebar" id="meta-sidebar">
+
+    <!-- Abas -->
+    <div class="sb-tabs" style="display:flex;align-items:center">
+      <button class="sb-tab active" id="sb-tab-meta" onclick="switchSbTab('meta')">📋 <span data-i18n="sMetadata">Metadados</span></button>
+      <button class="sb-tab" id="sb-tab-theme" onclick="switchSbTab('theme')">🎨 <span data-i18n="themeTab">Tema</span></button>
+    </div>
+
+    <!-- ── PAINEL METADADOS ── -->
+    <div class="sb-panel active" id="sb-panel-meta">
+    <div class="meta-sidebar-inner">
+
+    <div class="fg" style="display:flex;align-items:center;gap:8px;padding:5px 0 4px">
+      <input type="checkbox" id="f-show-hero" checked style="width:auto;cursor:pointer;accent-color:var(--accent);flex-shrink:0"/>
+      <label for="f-show-hero" style="font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);cursor:pointer;margin:0;line-height:1.4"><span data-i18n="showHeader">Exibir cabeçalho</span></label>
+    </div>
+
+    <div class="fg">
+      <span class="fl"><span data-i18n="sourceType">Tipo de fonte</span></span>
+      <select class="frm" id="f-srctype" onchange="updateMetaLabels(this.value)">
+        <option value="book">📗 Livro / Capítulo de livro</option>
+        <option value="article">📄 Artigo científico / Periódico</option>
+        <option value="thesis">🎓 Tese / Dissertação</option>
+        <option value="report">📋 Relatório / Documento técnico</option>
+        <option value="website">🌐 Site / Página web</option>
+        <option value="paper">📑 Comunicação / Anais de congresso</option>
+        <option value="manual">📘 Manual / Guia</option>
+        <option value="other">· Outro</option>
+      </select>
+    </div>
+
+    <div class="fg">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+        <span class="fl" id="lbl-tlen" style="margin:0">Título do capítulo / seção</span>
+        <label style="display:flex;align-items:center;gap:4px;cursor:pointer;font-family:var(--font-mono);font-size:8.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-muted);flex-shrink:0">
+          <input type="checkbox" id="title-split-check" style="width:auto;cursor:pointer;accent-color:var(--accent)" onchange="onHeroStyleChange()"/>
+          ✦ <span data-i18n="twoColors">2 cores</span>
+        </label>
+      </div>
+      <input type="text" id="f-tlen" data-bi-id="f-tlen" placeholder="Título do capítulo"
+        oninput="_fieldData['f-tlen']=_fieldData['f-tlen']||{};_fieldData['f-tlen'][_editLang]=this.value"/>
+    </div>
+    <!-- Título bicolor: prefixo + título principal -->
+    <div class="fg" id="title-split-row" style="display:none;margin-top:-4px;background:rgba(122,59,30,.04);border:1px solid var(--rule);border-radius:5px;padding:10px 10px 8px">
+
+      <!-- Preview em tempo real -->
+      <div id="prefix-live-preview" style="font-family:var(--font-serif);font-size:1.35rem;line-height:1.2;margin-bottom:10px;padding:6px 10px;background:var(--paper);border-radius:4px;border:1px solid var(--rule);min-height:2.2em;display:flex;align-items:center;gap:.3em;flex-wrap:wrap">
+        <span id="prefix-preview-span" style="color:#7a3b1e;font-weight:700">Generator ·</span>
+        <span id="main-preview-span" style="color:#1a1714">Título do capítulo</span>
+      </div>
+
+      <!-- Linha 1: texto + cores -->
+      <div style="display:flex;align-items:center;gap:5px;margin-bottom:7px">
+        <input type="text" id="f-title-prefix" data-bi-id="f-title-prefix" placeholder="ex: Generator ·"
+          style="flex:1;font-family:var(--font-body);font-size:.9rem;padding:5px 8px;border:1px solid var(--rule-strong);border-radius:3px;background:var(--paper);color:var(--ink)"
+          oninput="onHeroStyleChange();_updatePrefixPreview();if(!_fieldData['f-title-prefix'])_fieldData['f-title-prefix']={};_fieldData['f-title-prefix'][_editLang]=this.value;"/>
+        <label class="tcc-pick" title="Cor do prefixo" style="width:26px;height:26px;flex-shrink:0">
+          <span id="title-prefix-color-sw" class="tcc-dot" style="background:#7a3b1e"></span>
+          <input type="color" id="title-prefix-color" value="#7a3b1e" oninput="onHeroStyleChange();_updatePrefixPreview()"/>
+        </label>
+        <label class="tcc-pick" title="Cor do título principal" style="width:26px;height:26px;flex-shrink:0">
+          <span id="title-main-color-sw" class="tcc-dot" style="background:#1a1714"></span>
+          <input type="color" id="title-main-color" value="#1a1714" oninput="onHeroStyleChange();_updatePrefixPreview()"/>
+        </label>
+      </div>
+
+      <!-- Linha 2: fonte do prefixo -->
+      <div style="margin-bottom:6px">
+        <div style="font-family:var(--font-mono);font-size:8px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:5px" data-i18n-static="lblPrefixFont">Fonte do prefixo</div>
+        <!-- Preset buttons — fontes display/especiais (data-fam/data-gf evita &quot;) -->
+        <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:5px" id="prefix-font-presets">
+          <button data-fam="inherit" data-gf="" style="font-family:inherit;font-size:11px;padding:3px 8px;border:1px solid var(--rule-strong);border-radius:3px;background:var(--paper);cursor:pointer;color:var(--ink-soft)">Padrão</button>
+          <button data-fam="'Playfair Display',serif" data-gf="Playfair+Display:ital,wght@0,400;0,700;1,400" style="font-family:Georgia,serif;font-size:12px;padding:3px 8px;border:1px solid var(--rule-strong);border-radius:3px;background:var(--paper);cursor:pointer;color:var(--ink-soft);font-style:italic">Playfair</button>
+          <button data-fam="'Cinzel',serif" data-gf="Cinzel:wght@400;700;900" style="font-family:Georgia,serif;font-size:10px;padding:3px 8px;border:1px solid var(--rule-strong);border-radius:3px;background:var(--paper);cursor:pointer;color:var(--ink-soft);letter-spacing:.1em">CINZEL</button>
+          <button data-fam="'Cinzel Decorative',serif" data-gf="Cinzel+Decorative:wght@400;700;900" style="font-family:Georgia,serif;font-size:10px;padding:3px 8px;border:1px solid var(--rule-strong);border-radius:3px;background:var(--paper);cursor:pointer;color:var(--ink-soft);letter-spacing:.08em">Cinzel ✦</button>
+          <button data-fam="'Cormorant SC',serif" data-gf="Cormorant+SC:wght@300;400;600;700" style="font-family:Georgia,serif;font-size:11px;padding:3px 8px;border:1px solid var(--rule-strong);border-radius:3px;background:var(--paper);cursor:pointer;color:var(--ink-soft);letter-spacing:.06em">CORMORANT SC</button>
+          <button data-fam="'IM Fell English',serif" data-gf="IM+Fell+English:ital@1" style="font-family:Georgia,serif;font-size:13px;padding:3px 8px;border:1px solid var(--rule-strong);border-radius:3px;background:var(--paper);cursor:pointer;color:var(--ink-soft);font-style:italic">IM Fell</button>
+          <button data-fam="'Bebas Neue',sans-serif" data-gf="Bebas+Neue" style="font-family:sans-serif;font-size:11px;padding:3px 8px;border:1px solid var(--rule-strong);border-radius:3px;background:var(--paper);cursor:pointer;color:var(--ink-soft);letter-spacing:.12em">BEBAS</button>
+          <button data-fam="'Abril Fatface',serif" data-gf="Abril+Fatface" style="font-family:Georgia,serif;font-size:13px;padding:3px 8px;border:1px solid var(--rule-strong);border-radius:3px;background:var(--paper);cursor:pointer;color:var(--ink-soft)">Abril</button>
+          <button data-fam="'Oswald',sans-serif" data-gf="Oswald:wght@300;400;600" style="font-family:sans-serif;font-size:11px;padding:3px 8px;border:1px solid var(--rule-strong);border-radius:3px;background:var(--paper);cursor:pointer;color:var(--ink-soft);letter-spacing:.05em">Oswald</button>
+          <button data-fam="'Dancing Script',cursive" data-gf="Dancing+Script:wght@400;600;700" style="font-family:cursive;font-size:14px;padding:3px 8px;border:1px solid var(--rule-strong);border-radius:3px;background:var(--paper);cursor:pointer;color:var(--ink-soft)">Dancing</button>
+          <button data-fam="'Great Vibes',cursive" data-gf="Great+Vibes" style="font-family:cursive;font-size:15px;padding:3px 8px;border:1px solid var(--rule-strong);border-radius:3px;background:var(--paper);cursor:pointer;color:var(--ink-soft)">Great Vibes</button>
+          <button data-fam="'Pacifico',cursive" data-gf="Pacifico" style="font-family:cursive;font-size:12px;padding:3px 8px;border:1px solid var(--rule-strong);border-radius:3px;background:var(--paper);cursor:pointer;color:var(--ink-soft)">Pacifico</button>
+          <button data-fam="'Yeseva One',serif" data-gf="Yeseva+One" style="font-family:Georgia,serif;font-size:12px;padding:3px 8px;border:1px solid var(--rule-strong);border-radius:3px;background:var(--paper);cursor:pointer;color:var(--ink-soft)">Yeseva</button>
+          <button data-fam="'Philosopher',serif" data-gf="Philosopher:ital,wght@0,400;0,700;1,400;1,700" style="font-family:Georgia,serif;font-size:12px;padding:3px 8px;border:1px solid var(--rule-strong);border-radius:3px;background:var(--paper);cursor:pointer;color:var(--ink-soft);font-style:italic">Philosopher</button>
+          <button data-fam="'Rozha One',serif" data-gf="Rozha+One" style="font-family:Georgia,serif;font-size:12px;padding:3px 8px;border:1px solid var(--rule-strong);border-radius:3px;background:var(--paper);cursor:pointer;color:var(--ink-soft)">Rozha</button>
+          <button data-fam="'Italiana',serif" data-gf="Italiana" style="font-family:Georgia,serif;font-size:13px;padding:3px 8px;border:1px solid var(--rule-strong);border-radius:3px;background:var(--paper);cursor:pointer;color:var(--ink-soft);font-style:italic">Italiana</button>
+          <button data-fam="'Spectral',serif" data-gf="Spectral:ital,wght@0,300;0,600;1,300;1,600" style="font-family:Georgia,serif;font-size:12px;padding:3px 8px;border:1px solid var(--rule-strong);border-radius:3px;background:var(--paper);cursor:pointer;color:var(--ink-soft)">Spectral</button>
+          <button data-fam="'Fraunces',serif" data-gf="Fraunces:ital,opsz,wght@0,9..144,300;1,9..144,300" style="font-family:Georgia,serif;font-size:12px;padding:3px 8px;border:1px solid var(--rule-strong);border-radius:3px;background:var(--paper);cursor:pointer;color:var(--ink-soft);font-style:italic">Fraunces</button>
+          <button data-fam="'Josefin Sans',sans-serif" data-gf="Josefin+Sans:ital,wght@0,300;0,600;1,300" style="font-family:sans-serif;font-size:10px;padding:3px 8px;border:1px solid var(--rule-strong);border-radius:3px;background:var(--paper);cursor:pointer;color:var(--ink-soft);letter-spacing:.14em">JOSEFIN</button>
+          <button data-fam="'Poiret One',sans-serif" data-gf="Poiret+One" style="font-family:sans-serif;font-size:11px;padding:3px 8px;border:1px solid var(--rule-strong);border-radius:3px;background:var(--paper);cursor:pointer;color:var(--ink-soft);letter-spacing:.06em">Poiret</button>
+          <button data-fam="'Comfortaa',sans-serif" data-gf="Comfortaa:wght@300;400;700" style="font-family:sans-serif;font-size:11px;padding:3px 8px;border:1px solid var(--rule-strong);border-radius:3px;background:var(--paper);cursor:pointer;color:var(--ink-soft)">Comfortaa</button>
+        </div>
+        <!-- Custom Google Font -->
+        <div style="display:flex;gap:4px">
+          <input type="text" id="prefix-font-custom-inp" placeholder="Outra fonte do Google Fonts…"
+            data-i18n-ph="lblPrefixOtherFont"
+            style="flex:1;font-family:var(--font-mono);font-size:10px;padding:4px 7px;border:1px solid var(--rule-strong);border-radius:3px;background:var(--paper);color:var(--ink)"
+            onkeydown="if(event.key==='Enter')_applyPrefixFontCustom()"/>
+          <button onclick="_applyPrefixFontCustom()" data-i18n="lblPrefixApply" style="background:var(--accent);color:#fff;border:none;border-radius:3px;font-family:var(--font-mono);font-size:9px;padding:4px 9px;cursor:pointer;white-space:nowrap">Aplicar</button>
+        </div>
+      </div>
+
+      <!-- Linha 3: tamanho + peso do prefixo -->
+      <div style="display:grid;grid-template-columns:auto 1fr auto auto auto auto;gap:5px;align-items:center;min-width:0">
+        <div style="font-family:var(--font-mono);font-size:8px;color:var(--ink-muted);white-space:nowrap" data-i18n="lblPrefixSize">Tam.</div>
+        <input type="range" id="prefix-size-range" min="60" max="200" value="100" step="5"
+          style="min-width:0;height:4px;cursor:pointer;accent-color:var(--accent)"
+          oninput="document.getElementById('prefix-size-val').textContent=this.value+'%';onHeroStyleChange();_updatePrefixPreview()"/>
+        <span id="prefix-size-val" style="font-family:var(--font-mono);font-size:9px;color:var(--accent);min-width:30px;text-align:right">100%</span>
+        <select id="prefix-weight-sel" style="font-family:var(--font-mono);font-size:9px;background:var(--paper);border:1px solid var(--rule-strong);border-radius:3px;padding:2px 3px;color:var(--ink-soft);cursor:pointer;height:22px;max-width:54px" onchange="onHeroStyleChange();_updatePrefixPreview()">
+          <option value="300" data-i18n-opt="wLight">Leve</option>
+          <option value="400" data-i18n-opt="wNormal">Normal</option>
+          <option value="600" data-i18n-opt="wSemi">Semi</option>
+          <option value="700" selected data-i18n-opt="wBold">Bold</option>
+          <option value="900" data-i18n-opt="wBlack">Black</option>
+        </select>
+        <select id="prefix-style-sel" style="font-family:var(--font-mono);font-size:9px;background:var(--paper);border:1px solid var(--rule-strong);border-radius:3px;padding:2px 3px;color:var(--ink-soft);cursor:pointer;height:22px;max-width:54px" onchange="onHeroStyleChange();_updatePrefixPreview()">
+          <option value="normal" data-i18n-opt="fsNormal">Reto</option>
+          <option value="italic" data-i18n-opt="fsItalic">Itálico</option>
+        </select>
+      </div>
+    </div>
+    <div class="fg">
+      <span class="fl" id="lbl-bookname">Nome do livro</span>
+      <input type="text" id="f-bookname" placeholder="Título da obra"/>
+    </div>
+    <div class="row2">
+      <div class="fg"><span class="fl" id="lbl-bookauthor">Autor(es)</span><input type="text" id="f-bookauthor" placeholder="ex: Kenneth E. Bruscia"/></div>
+      <div class="fg"><span class="fl" data-i18n-static="yearLabel">Ano</span><input type="text" id="f-year" placeholder="ex: 1987"/></div>
+    </div>
+    <div class="fg" id="fg-publisher">
+      <span class="fl" id="lbl-publisher">Editora / Local</span>
+      <input type="text" id="f-publisher" placeholder="ex: Springfield: Charles C. Thomas"/>
+    </div>
+    <div class="row2">
+      <div class="fg"><span class="fl" id="lbl-pages">Páginas</span><input type="text" id="f-pages" placeholder="pp. 450–464"/></div>
+      <div class="fg" id="fg-unit">
+        <span class="fl" id="lbl-unit">Unidade · Capítulo</span>
+        <input type="text" id="f-unit" data-bi-id="f-unit" placeholder="Unit 9 · Ch. 33"/>
+      </div>
+    </div>
+
+    <div class="fg">
+      <span class="fl" style="display:flex;align-items:center;justify-content:space-between">
+        <span style="display:flex;align-items:center;gap:5px"><span data-i18n="doiLabel">DOI / Link de acesso</span>
+          <span style="font-family:var(--font-mono);font-size:8px;opacity:.45;font-weight:normal;text-transform:none;letter-spacing:0;background:var(--paper-deep);padding:1px 5px;border-radius:2px"><span data-i18n="optional">opcional</span></span>
+        </span>
+        <button id="f-doi-preview" type="button" onclick="_doiPreview()" title="Abrir link em nova aba" style="background:none;border:none;font-family:var(--font-mono);font-size:9px;color:var(--accent-soft);cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:2px;display:flex;align-items:center;gap:3px" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--accent-soft)'"><span data-i18n="testLink">↗ testar link</span></button>
+      </span>
+      <div style="display:flex;align-items:center;gap:6px;margin-top:2px">
+        <input type="text" id="f-doi" placeholder="https://doi.org/10.xxxx/… ou link do PDF" style="flex:1" oninput="_doiValidate(this)"/>
+        <span id="f-doi-status" style="display:none;font-size:13px;flex-shrink:0"></span>
+      </div>
+      <div id="f-doi-hint" style="font-family:var(--font-mono);font-size:8.5px;color:var(--ink-muted);margin-top:4px;line-height:1.6">
+        <span data-i18n="doiHint">Aparece como chip clicável no cabeçalho do HTML gerado.</span>
+      </div>
+    </div>
+
+    <div class="fg">
+      <span class="fl" id="lbl-herosub">Subtítulo hero</span>
+      <input type="text" id="f-herosub" data-bi-id="f-herosub" placeholder="ex: Improvisational Models"/>
+    </div>
+    <div class="fg">
+      <span class="fl"><span data-i18n="leadLabel">Lead / Descrição</span></span>
+      <input type="text" id="f-lead" data-bi-id="f-lead" placeholder="A brief descriptive sentence"/>
+    </div>
+    <div class="fg">
+      <span class="fl"><span data-i18n="eyebrowLabel">Eyebrow</span></span>
+      <input type="text" id="f-eyebrow" data-bi-id="f-eyebrow" placeholder="Unit 9 · Psychoanalytic Perspectives"/>
+    </div>
+
+    <hr class="dv"/>
+
+    <div style="margin-bottom:10px">
+      <span class="fl fl-section-title" style="margin-bottom:8px;display:flex"><span data-i18n="chapterNav">Navegação entre capítulos</span></span>
+
+      <div style="border:1px solid var(--rule);border-radius:4px;margin-bottom:6px;overflow:hidden">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:var(--paper-warm)">
+          <span style="font-family:var(--font-mono);font-size:9px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-soft)"><span data-i18n="prevChapter">← Anterior</span></span>
+          <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-family:var(--font-mono);font-size:9px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-muted)">
+            <span id="lbl-show-prev"><span data-i18n="active">Ativo</span></span>
+            <div class="toggle-track on" id="nav-prev-track" onclick="toggleNavBtn('prev')" style="flex-shrink:0;width:32px;height:18px">
+              <div class="toggle-thumb" style="width:11px;height:11px;top:2px;left:2px"></div>
+            </div>
+          </label>
+        </div>
+        <div id="nav-prev-fields" style="padding:8px 10px;display:flex;flex-direction:column;gap:6px;background:var(--paper)">
+          <div class="fg" style="margin:0"><span class="fl" data-i18n-static="fileLabel">Arquivo</span><input type="text" id="f-ph" placeholder="cap32.html"/></div>
+          <div class="fg" style="margin:0"><span class="fl" data-i18n-static="labelLabel">Rótulo</span><input type="text" id="f-pl" data-bi-id="f-pl" placeholder="Ch. 32 · The Profiles"/></div>
+        </div>
+      </div>
+
+      <div style="border:1px solid var(--rule);border-radius:4px;margin-bottom:6px;overflow:hidden">
+        <div style="padding:6px 10px;background:var(--paper-warm)">
+          <span style="font-family:var(--font-mono);font-size:9px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-soft)"><span data-i18n="navCenter">· Centro ·</span></span>
+        </div>
+        <div style="padding:8px 10px;background:var(--paper)">
+          <div class="fg" style="margin:0"><span class="fl"><span data-i18n="centerText">Texto central</span></span><input type="text" id="f-navcenter" data-bi-id="f-navcenter" placeholder="ex: Ch. 33 · Bruscia (1987)"/></div>
+        </div>
+      </div>
+
+      <div style="border:1px solid var(--rule);border-radius:4px;overflow:hidden">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;background:var(--paper-warm)">
+          <span style="font-family:var(--font-mono);font-size:9px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-soft)"><span data-i18n="nextChapter">Próximo →</span></span>
+          <label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-family:var(--font-mono);font-size:9px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-muted)">
+            <span id="lbl-show-next"><span data-i18n="active">Ativo</span></span>
+            <div class="toggle-track on" id="nav-next-track" onclick="toggleNavBtn('next')" style="flex-shrink:0;width:32px;height:18px">
+              <div class="toggle-thumb" style="width:11px;height:11px;top:2px;left:2px"></div>
+            </div>
+          </label>
+        </div>
+        <div id="nav-next-fields" style="padding:8px 10px;display:flex;flex-direction:column;gap:6px;background:var(--paper)">
+          <div class="fg" style="margin:0"><span class="fl" data-i18n-static="fileLabel">Arquivo</span><input type="text" id="f-nh" placeholder="cap34.html"/></div>
+          <div class="fg" style="margin:0"><span class="fl" data-i18n-static="labelLabel">Rótulo</span><input type="text" id="f-nl" data-bi-id="f-nl" placeholder="Ch. 34 · Appendix"/></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CRÉDITOS DO CABEÇALHO (apenas admin) ── -->
+    <div id="admin-credits-section" style="display:none;margin-top:14px;border-top:1px solid var(--rule);padding-top:12px">
+
+      <div class="fg">
+        <span class="fl">Cabeçalho do HTML gerado</span>
+        <select class="frm" id="f-credit-mode" onchange="(function(v){document.getElementById('credit-custom-fields').style.display=v==='custom'?'':'none';})(this.value)">
+          <option value="default">Padrão (Adaptado de… por Ivan Moriá Borges)</option>
+          <option value="custom">Personalizado</option>
+          <option value="none">Sem créditos</option>
+        </select>
+      </div>
+
+      <div id="credit-custom-fields" style="display:none">
+
+        <div class="fg">
+          <span class="fl">Texto do crédito no topo</span>
+          <input type="text" id="f-credit-text" placeholder="ex: Anais do XV Congresso · Organizado por Fulano"/>
+        </div>
+
+        <div class="fg">
+          <span class="fl">Rótulo do chip no cabeçalho</span>
+          <input type="text" id="f-credit-chip-label" placeholder="ex: Anais do Congresso 2025"/>
+        </div>
+
+        <div class="fg">
+          <span class="fl">Link do chip <span style="font-family:var(--font-mono);font-size:8px;opacity:.45;font-weight:normal;text-transform:none;letter-spacing:0;background:var(--paper-deep);padding:1px 5px;border-radius:2px">opcional</span></span>
+          <input type="text" id="f-credit-chip-url" placeholder="https://…"/>
+        </div>
+
+        <div style="border-top:1px solid var(--rule);margin-top:10px;padding-top:10px">
+          <span class="fl" style="margin-bottom:6px;display:block">Popup ao clicar no chip</span>
+
+          <div class="fg">
+            <span class="fl" style="font-weight:normal;opacity:.7">Nome / título</span>
+            <input type="text" id="f-popup-name" placeholder="ex: Comitê Científico"/>
+          </div>
+          <div class="fg">
+            <span class="fl" style="font-weight:normal;opacity:.7">Descrição</span>
+            <input type="text" id="f-popup-desc" placeholder="ex: XV Congresso Brasileiro de Musicoterapia"/>
+          </div>
+          <div class="fg">
+            <span class="fl" style="font-weight:normal;opacity:.7">E-mail de contato <span style="font-family:var(--font-mono);font-size:8px;opacity:.45;font-weight:normal;text-transform:none;letter-spacing:0;background:var(--paper-deep);padding:1px 5px;border-radius:2px">opcional</span></span>
+            <input type="text" id="f-popup-email" placeholder="ex: contato@congresso.org"/>
+          </div>
+          <div class="fg">
+            <span class="fl" style="font-weight:normal;opacity:.7">Site <span style="font-family:var(--font-mono);font-size:8px;opacity:.45;font-weight:normal;text-transform:none;letter-spacing:0;background:var(--paper-deep);padding:1px 5px;border-radius:2px">opcional</span></span>
+            <input type="text" id="f-popup-url" placeholder="https://congresso.org"/>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    </div><!-- end meta-sidebar-inner -->
+    </div><!-- end sb-panel-meta -->
+
+    <!-- ── PAINEL TEMA ── -->
+    <div class="sb-panel" id="sb-panel-theme">
+    <div class="meta-sidebar-inner" style="padding-top:14px">
+
+      <!-- ① Estilo + Tipografia -->
+      <div class="row2" style="gap:8px;margin-bottom:10px">
+        <div class="fg" style="margin:0">
+          <span class="fl" id="theme-style-label" data-i18n-static="themeLabel">Estilo</span>
+          <select class="frm" id="theme-preset" onchange="applyThemePreset(this.value)" style="font-size:.8rem;padding:4px 6px">
+            <option value="classic">📜 Classic</option>
+            <option value="modern">🔲 Modern</option>
+            <option value="dark">🌑 Dark</option>
+            <option value="sepia">🟤 Sepia</option>
+            <option value="minimal">⬜ Minimal</option>
+            <option value="forest">🌿 Forest</option>
+            <option value="ocean">🌊 Ocean</option>
+            <option value="midnight">🌃 Midnight</option>
+            <option value="rose">🌸 Rose</option>
+            <option value="slate">🪨 Slate</option>
+            <option value="amber">🟡 Amber</option>
+            <option value="custom">🎨 Custom…</option>
+          </select>
+        </div>
+        <div class="fg" style="margin:0">
+          <span class="fl" id="theme-font-label" data-i18n-static="themeFont">Tipografia</span>
+          <select class="frm" id="theme-font-preset" onchange="onThemeFontChange(this.value)" style="font-size:.8rem;padding:4px 6px">
+            <option value="cormorant" id="opt-cormorant-default">Cormorant (padrão)</option>
+            <option value="lora">Lora</option>
+            <option value="playfair">Playfair Display</option>
+            <option value="merriweather">Merriweather</option>
+            <option value="eb-garamond">EB Garamond</option>
+            <option value="inter">Inter (sans)</option>
+            <option value="georgia">Georgia</option>
+            <option value="custom-font" id="opt-custom-font">✏ <span data-i18n-static="lblCustomFont">Fonte personalizada</span>…</option>
+          </select>
+          <!-- campo de fonte custom — aparece ao escolher "Fonte personalizada" -->
+          <div id="custom-font-row" style="display:none;margin-top:5px">
+            <div style="font-family:var(--font-mono);font-size:8px;color:var(--ink-muted);margin-bottom:3px;line-height:1.5">Nome exato do Google Fonts (ex: <em>Nunito</em>, <em>Crimson Pro</em>):</div>
+            <div style="display:flex;gap:4px">
+              <input type="text" id="custom-font-inp" placeholder="ex: Playfair Display SC"
+                style="flex:1;font-family:var(--font-mono);font-size:11px;padding:4px 7px;border:1px solid var(--rule-strong);border-radius:3px;background:var(--paper);color:var(--ink)"
+                onkeydown="if(event.key==='Enter')applyCustomFont()"/>
+              <button onclick="applyCustomFont()" style="background:var(--accent);color:#fff;border:none;border-radius:3px;font-family:var(--font-mono);font-size:9px;padding:4px 10px;cursor:pointer;white-space:nowrap">Aplicar</button>
+            </div>
+            <div style="font-family:var(--font-mono);font-size:7.5px;color:var(--ink-muted);margin-top:3px;line-height:1.5">A fonte será carregada do Google Fonts automaticamente.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ② Cores — compact swatches grid -->
+      <div style="margin-bottom:8px">
+        <span class="fl" id="lbl-palette" data-i18n-static="lblPalette" style="margin-bottom:6px;display:flex">Paleta de cores</span>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px 8px">
+
+          <div class="fg" style="margin:0">
+            <span class="fl" id="lbl-accent-color" data-i18n-static="lblAccent" style="font-size:7.5px;margin-bottom:3px">Destaque</span>
+            <label class="tcc-pick" id="theme-accent-swatch-wrap" title="Cor principal — títulos, botões, nav">
+              <span id="theme-accent-swatch" class="tcc-dot" style="background:#7a3b1e"></span>
+              <input type="color" id="theme-accent-color" value="#7a3b1e" oninput="onThemeAccentInput(this.value)"/>
+            </label>
+          </div>
+
+          <div class="fg" style="margin:0">
+            <span class="fl" id="lbl-secondary-color" data-i18n-static="lblSecondary" style="font-size:7.5px;margin-bottom:3px">Secundária</span>
+            <label class="tcc-pick" title="Bordas ativas, hovers, links">
+              <span id="theme-secondary-swatch" class="tcc-dot" style="background:#c4844a"></span>
+              <input type="color" id="theme-secondary-color" value="#c4844a" oninput="onThemeSecondaryInput(this.value)"/>
+            </label>
+          </div>
+
+          <div class="fg" style="margin:0">
+            <span class="fl" id="lbl-text-color" data-i18n-static="lblTextColor" style="font-size:7.5px;margin-bottom:3px">Texto</span>
+            <label class="tcc-pick" title="Cor principal do texto">
+              <span id="theme-ink-swatch" class="tcc-dot" style="background:#1a1714"></span>
+              <input type="color" id="theme-ink-color" value="#1a1714" oninput="onThemeInkInput(this.value)"/>
+            </label>
+          </div>
+
+          <div class="fg" style="margin:0">
+            <span class="fl" id="lbl-bg-color" data-i18n-static="lblBgColor" style="font-size:7.5px;margin-bottom:3px">Fundo</span>
+            <label class="tcc-pick" title="Cor de fundo da página">
+              <span id="theme-bg-swatch" class="tcc-dot" style="background:#f5f0e8"></span>
+              <input type="color" id="theme-bg-color" value="#f5f0e8" oninput="onThemeBgInput(this.value)"/>
+            </label>
+          </div>
+
+          <div class="fg" style="margin:0">
+            <span class="fl" style="font-size:7.5px;margin-bottom:3px">Hero BG</span>
+            <label class="tcc-pick" title="Fundo do cabeçalho hero (sem imagem)">
+              <span id="theme-bgwarm-swatch" class="tcc-dot" style="background:#ede6d6"></span>
+              <input type="color" id="theme-bgwarm-color" value="#ede6d6" oninput="onThemeBgWarmInput(this.value)"/>
+            </label>
+          </div>
+
+          <div class="fg" style="margin:0">
+            <span class="fl" id="lbl-chips-color" data-i18n-static="lblChips" style="font-size:7.5px;margin-bottom:3px">Chips</span>
+            <label class="tcc-pick" title="Cor dos chips de metadado no cabeçalho">
+              <span id="theme-chip-swatch" class="tcc-dot" style="background:#7a3b1e"></span>
+              <input type="color" id="theme-chip-color" value="#7a3b1e" oninput="onThemeChipInput(this.value)"/>
+            </label>
+          </div>
+
+          <div class="fg" style="margin:0">
+            <span class="fl" style="font-size:7.5px;margin-bottom:3px">¶ TTS</span>
+            <label class="tcc-pick" title="Cor da caixa do parágrafo selecionado pelo leitor de voz">
+              <span id="theme-tts-swatch" class="tcc-dot" style="background:#c4844a"></span>
+              <input type="color" id="theme-tts-color" value="#c4844a" oninput="onThemeTtsInput(this.value)"/>
+            </label>
+          </div>
+
+          <div class="fg" style="margin:0">
+            <span class="fl" style="font-size:7.5px;margin-bottom:3px">w TTS</span>
+            <label class="tcc-pick" title="Cor do destaque de palavra durante a leitura TTS">
+              <span id="theme-tts-word-swatch" class="tcc-dot" style="background:#c4844a"></span>
+              <input type="color" id="theme-tts-word-color" value="#c4844a" oninput="onThemeTtsWordInput(this.value)"/>
+            </label>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ② Hero text style controls -->
+      <div style="margin-bottom:8px">
+        <span class="fl" id="lbl-header-style" data-i18n-static="lblHeaderStyle" style="margin-bottom:6px;display:flex">Estilo do cabeçalho</span>
+        <div style="display:flex;flex-direction:column;gap:5px">
+
+          <!-- Título -->
+          <div style="border:1px solid var(--rule);border-radius:4px;overflow:hidden">
+            <div style="display:flex;align-items:center;gap:7px;padding:5px 9px;background:var(--paper-warm)">
+              <input type="checkbox" id="title-card-check" style="width:auto;cursor:pointer;accent-color:var(--accent);flex-shrink:0" onchange="onHeroStyleChange()"/>
+              <label for="title-card-check" id="lbl-title-card" data-i18n-static="lblTitleCard" style="font-family:var(--font-mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);cursor:pointer;flex:1;margin:0">Título em card</label>
+              <label class="tcc-pick" title="Cor do texto do título" style="width:22px;height:22px;flex-shrink:0">
+                <span id="title-color-swatch" class="tcc-dot" style="background:#1a1714"></span>
+                <input type="color" id="title-color-inp" value="#1a1714" oninput="onHeroStyleChange()"/>
+              </label>
+              <span style="font-family:var(--font-mono);font-size:7px;color:var(--ink-muted)">txt</span>
+              <label class="tcc-pick" title="Cor de fundo do card do título" id="title-bg-wrap" style="width:22px;height:22px;flex-shrink:0;opacity:.35">
+                <span id="title-bg-swatch" class="tcc-dot" style="background:#ffffff"></span>
+                <input type="color" id="title-bg-inp" value="#ffffff" oninput="onHeroStyleChange(true,'title')"/>
+              </label>
+              <span id="title-bg-lbl" style="font-family:var(--font-mono);font-size:7px;color:var(--ink-muted);opacity:.35">bg</span>
+            </div>
+          </div>
+
+          <!-- Subtítulo -->
+          <div style="border:1px solid var(--rule);border-radius:4px;overflow:hidden">
+            <div style="display:flex;align-items:center;gap:7px;padding:5px 9px;background:var(--paper-warm)">
+              <input type="checkbox" id="sub-card-check" style="width:auto;cursor:pointer;accent-color:var(--accent);flex-shrink:0" onchange="onHeroStyleChange()"/>
+              <label for="sub-card-check" id="lbl-sub-card" data-i18n-static="lblSubCard" style="font-family:var(--font-mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);cursor:pointer;flex:1;margin:0">Subtítulo em card</label>
+              <label class="tcc-pick" title="Cor do texto do subtítulo" style="width:22px;height:22px;flex-shrink:0">
+                <span id="sub-color-swatch" class="tcc-dot" style="background:#4a4540"></span>
+                <input type="color" id="sub-color-inp" value="#4a4540" oninput="onHeroStyleChange()"/>
+              </label>
+              <span style="font-family:var(--font-mono);font-size:7px;color:var(--ink-muted)">txt</span>
+              <label class="tcc-pick" title="Cor de fundo do card do subtítulo" id="sub-bg-wrap" style="width:22px;height:22px;flex-shrink:0;opacity:.35">
+                <span id="sub-bg-swatch" class="tcc-dot" style="background:#ffffff"></span>
+                <input type="color" id="sub-bg-inp" value="#ffffff" oninput="onHeroStyleChange(true,'sub')"/>
+              </label>
+              <span id="sub-bg-lbl" style="font-family:var(--font-mono);font-size:7px;color:var(--ink-muted);opacity:.35">bg</span>
+            </div>
+          </div>
+
+          <!-- Lead -->
+          <div style="border:1px solid var(--rule);border-radius:4px;overflow:hidden">
+            <div style="display:flex;align-items:center;gap:7px;padding:5px 9px;background:var(--paper-warm)">
+              <input type="checkbox" id="lead-card-check" style="width:auto;cursor:pointer;accent-color:var(--accent);flex-shrink:0" onchange="onHeroStyleChange()"/>
+              <label for="lead-card-check" id="lbl-lead-card" data-i18n-static="lblLeadCard" style="font-family:var(--font-mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);cursor:pointer;flex:1;margin:0">Lead em card</label>
+              <label class="tcc-pick" title="Cor do texto do lead" style="width:22px;height:22px;flex-shrink:0">
+                <span id="lead-color-swatch" class="tcc-dot" style="background:#6b6560"></span>
+                <input type="color" id="lead-color-inp" value="#6b6560" oninput="onHeroStyleChange()"/>
+              </label>
+              <span style="font-family:var(--font-mono);font-size:7px;color:var(--ink-muted)">txt</span>
+              <label class="tcc-pick" title="Cor de fundo do card do lead" id="lead-bg-wrap" style="width:22px;height:22px;flex-shrink:0;opacity:.35">
+                <span id="lead-bg-swatch" class="tcc-dot" style="background:#ffffff"></span>
+                <input type="color" id="lead-bg-inp" value="#ffffff" oninput="onHeroStyleChange(true,'lead')"/>
+              </label>
+              <span id="lead-bg-lbl" style="font-family:var(--font-mono);font-size:7px;color:var(--ink-muted);opacity:.35">bg</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <hr class="dv"/>
+
+      <!-- ③ Imagem de cabeçalho: botões + sugestões + sliders ANTES do preview -->
+      <div class="fg" style="margin-bottom:6px">
+        <div style="display:flex;align-items:center;gap:5px;margin-bottom:6px">
+          <span class="fl" id="lbl-hero-img" data-i18n-static="lblHeroImg" style="margin:0;flex:1">Imagem do cabeçalho</span>
+          <button onclick="document.getElementById('theme-img-file').click()" title="Trocar imagem do cabeçalho"
+            style="background:none;border:1px solid var(--rule-strong);border-radius:3px;font-family:var(--font-mono);font-size:8px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-muted);padding:2px 7px;cursor:pointer;transition:all .12s"
+            id="theme-img-change-btn"
+            onmouseover="this.style.borderColor='var(--accent-soft)';this.style.color='var(--accent)'"
+            onmouseout="this.style.borderColor='var(--rule-strong)';this.style.color='var(--ink-muted)'">
+            🖼 <span id="lbl-file-btn" data-i18n-static="lblFileBtn">Arquivo</span>
+          </button>
+          <button onclick="openImgSearch()" title="Buscar imagens"
+            style="background:none;border:1px solid var(--rule-strong);border-radius:3px;font-family:var(--font-mono);font-size:8px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-muted);padding:2px 7px;cursor:pointer;transition:all .12s"
+            onmouseover="this.style.borderColor='var(--accent-soft)';this.style.color='var(--accent)'"
+            onmouseout="this.style.borderColor='var(--rule-strong)';this.style.color='var(--ink-muted)'">
+            🔍 <span id="lbl-search-btn" data-i18n-static="lblSearchBtn">Buscar</span>
+          </button>
+          <button id="theme-img-clear-btn" onclick="clearThemeHeroImg()" title="Remover imagem" style="display:none;background:none;border:1px solid var(--rule-strong);border-radius:3px;font-family:var(--font-mono);font-size:8px;color:var(--ink-muted);padding:2px 6px;cursor:pointer;transition:all .12s"
+            onmouseover="this.style.borderColor='var(--error)';this.style.color='var(--error)'"
+            onmouseout="this.style.borderColor='var(--rule-strong)';this.style.color='var(--ink-muted)'">✕</button>
+        </div>
+        <!-- Sugestões de imagem por tema — ACIMA do preview -->
+        <div id="theme-img-suggestions" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px"></div>
+      </div>
+
+      <!-- ④ SLIDERS de imagem (só aparecem quando há imagem) — ACIMA do preview -->
+      <div id="theme-img-controls" style="display:none">
+        <hr class="dv" style="margin:8px 0 12px"/>
+
+        <!-- Opacidade da imagem -->
+        <div class="tslider-row">
+          <div class="tslider-label">
+            <span class="tslider-icon">🔍</span>
+            <span class="tslider-name" id="lbl-img-sharpness" data-i18n-static="lblImgSharpness">Nitidez da imagem</span>
+            <span class="tslider-val" id="theme-img-imgopacity-val">100%</span>
+          </div>
+          <div class="tslider-track-wrap">
+            <input type="range" class="tslider" id="theme-img-imgopacity" min="10" max="100" value="100" step="5"
+              oninput="onThemeImgImgOpacityChange(this.value)"/>
+            <div class="tslider-fill" id="tslider-fill-imgopacity" style="width:100%"></div>
+          </div>
+        </div>
+
+        <!-- Escurecimento -->
+        <div class="tslider-row">
+          <div class="tslider-label">
+            <span class="tslider-icon">🌑</span>
+            <span class="tslider-name" id="lbl-img-dimmer" data-i18n-static="lblImgDimmer">Escurecimento (legibilidade)</span>
+            <span class="tslider-val" id="theme-img-dimmer-val">50%</span>
+          </div>
+          <div class="tslider-track-wrap">
+            <input type="range" class="tslider" id="theme-img-dimmer" min="0" max="90" value="50" step="5"
+              oninput="onThemeImgDimmerChange(this.value)"/>
+            <div class="tslider-fill" id="tslider-fill-dimmer" style="width:55.6%"></div>
+          </div>
+        </div>
+
+        <!-- Tamanho -->
+        <div class="tslider-row">
+          <div class="tslider-label">
+            <span class="tslider-icon">⤢</span>
+            <span class="tslider-name" id="lbl-img-size" data-i18n-static="lblImgSize">Tamanho da imagem</span>
+            <span class="tslider-val" id="theme-img-scale-val">100%</span>
+          </div>
+          <div class="tslider-track-wrap">
+            <input type="range" class="tslider" id="theme-img-scale" min="100" max="300" value="100" step="5"
+              oninput="onThemeImgScaleChange(this.value)"/>
+            <div class="tslider-fill" id="tslider-fill-scale" style="width:0%"></div>
+          </div>
+        </div>
+
+        <!-- Efeito de cor + intensidade -->
+        <div class="row2" style="gap:8px;margin-top:4px;align-items:end">
+          <div class="fg" style="margin:0">
+            <span class="fl" style="font-size:8px">Efeito de cor</span>
+            <select class="frm" id="theme-img-blend" onchange="onThemeImgBlendChange()" style="font-size:.78rem;padding:4px 5px">
+              <option value="none">Nenhum</option>
+              <option value="overlay">Overlay</option>
+              <option value="darken">Escurecer</option>
+              <option value="multiply">Multiply</option>
+              <option value="soft-light">Soft Light</option>
+              <option value="color">Colorir</option>
+            </select>
+          </div>
+          <div class="tslider-row" style="margin:0;flex:1">
+            <div class="tslider-label" style="margin-bottom:3px">
+              <span class="tslider-name" style="font-size:8px">Intensidade</span>
+              <span class="tslider-val" id="theme-img-opacity-val">40%</span>
+            </div>
+            <div class="tslider-track-wrap">
+              <input type="range" class="tslider" id="theme-img-opacity" min="0" max="100" value="40" step="5"
+                oninput="onThemeImgOpacityChange(this.value)"/>
+              <div class="tslider-fill" id="tslider-fill-opacity" style="width:40%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ⑤ PREVIEW — iframe com simulador de dispositivos -->
+      <div class="fg" style="margin-bottom:0">
+        <!-- Toolbar: device buttons -->
+        <div style="display:flex;align-items:center;gap:3px;margin-bottom:6px;flex-wrap:wrap">
+          <span class="fl" style="margin:0;flex:1">Preview</span>
+          <button id="dev-scroll-btn" onclick="_toggleIframeScroll()" title="Ativar scroll no preview" style="background:none;border:1px solid var(--rule-strong);border-radius:3px;font-size:9px;padding:2px 7px;cursor:pointer;color:var(--ink-muted);font-family:var(--font-mono)" onmouseover="this.style.borderColor='var(--accent-soft)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--rule-strong)';this.style.color='var(--ink-muted)'">☝ scroll</button>
+          <button onclick="_updateThemePreview()" title="Atualizar preview" style="background:none;border:1px solid var(--rule-strong);border-radius:3px;font-size:10px;padding:2px 7px;cursor:pointer;color:var(--ink-muted);font-family:var(--font-mono)" onmouseover="this.style.borderColor='var(--accent-soft)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--rule-strong)';this.style.color='var(--ink-muted)'">↺</button>
+          <span id="tpc-drag-hint" style="display:none;font-family:var(--font-mono);font-size:7.5px;color:var(--ink-muted);letter-spacing:.04em" data-i18n="dragHint">↔↕ arraste</span>
+        </div>
+
+        <!-- Shell background — shows phone chrome when in mobile mode -->
+        <div id="tpc-device-outer" style="display:flex;align-items:center;justify-content:center;background:var(--paper-deep);border-radius:10px;padding:6px;box-shadow:0 3px 12px rgba(0,0,0,.12);position:relative;transition:padding .3s,background .3s">
+          <input type="file" id="theme-img-file" accept="image/*" style="display:none" onchange="onThemeHeroImgFile(this)"/>
+          <!-- Phone bezel (hidden in desktop mode) -->
+          <div id="tpc-phone-bezel" style="display:none;position:absolute;inset:0;border-radius:10px;pointer-events:none;z-index:5">
+            <!-- drawn via box-shadow in JS -->
+          </div>
+          <!-- The actual preview container -->
+          <div id="tpc-iframe-wrap" style="border-radius:6px;overflow:hidden;position:relative;height:460px;width:100%;cursor:grab;background:var(--paper);transition:width .3s,height .3s,border-radius .3s">
+            <iframe id="tpc-iframe" sandbox="allow-scripts allow-same-origin"
+              style="position:absolute;top:-26px;left:0;width:760px;height:1000px;border:none;pointer-events:none;transform-origin:top left;transform:scale(0.48);flex-shrink:0"></iframe>
+            <div id="tpc-iframe-loading" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:9px;color:var(--ink-muted);letter-spacing:.08em;text-transform:uppercase" data-i18n="loading">Carregando…</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ⑥ POPUP de preview ampliado -->
+      <div id="theme-preview-popup" onclick="if(event.target===this)closeThemePreviewPopup()" style="display:none;position:fixed;inset:0;z-index:9600;background:rgba(0,0,0,.6);backdrop-filter:blur(3px);align-items:center;justify-content:center;padding:20px">
+        <div style="position:relative;width:min(900px,96vw);height:min(700px,92vh);background:var(--paper-deep);border-radius:10px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.45);display:flex;flex-direction:column">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 14px;background:var(--paper-warm);border-bottom:1px solid var(--rule-strong);flex-shrink:0">
+            <span style="font-family:var(--font-mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-muted)">Preview · <span id="theme-popup-label" style="color:var(--accent)">Classic</span></span>
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="font-family:var(--font-mono);font-size:8px;color:var(--ink-muted)" data-i18n="dragToReposition">Arraste para reposicionar imagem</span>
+              <button onclick="closeThemePreviewPopup()" style="background:none;border:1px solid var(--rule-strong);border-radius:3px;font-family:var(--font-mono);font-size:9px;color:var(--ink-muted);padding:3px 10px;cursor:pointer" onmouseover="this.style.background='var(--paper-deep)'" onmouseout="this.style.background='none'" data-i18n="previewClose">✕ Fechar</button>
+            </div>
+          </div>
+          <div id="tpc-popup-wrap" style="flex:1;position:relative;overflow:hidden;cursor:grab">
+            <iframe id="tpc-popup-iframe" sandbox="allow-scripts allow-same-origin"
+              style="position:absolute;top:0;left:0;border:none;pointer-events:none;transform-origin:top left;"
+              scrolling="no"></iframe>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end meta-sidebar-inner -->
+    </div><!-- end sb-panel-theme -->
+
+  </div><!-- end meta-sidebar -->
+
+  <!-- ══ PAINEL CONTEÚDO ══ -->
+
+  <div class="panel-left">
+    <div class="panel-left-hdr">
+      <div class="pl"><span data-i18n="sContent">2 · Conteúdo</span></div>
+      <button class="panel-expand-btn" id="mob-sections-expand-btn"
+        onclick="toggleSectionsFullscreen()" title="Tela cheia">⤢ <span data-i18n="expandBtn">Expandir</span></button>
+    </div>
+    <div class="note"><span data-i18n="contentHint">Adicione blocos na ordem desejada. Use os botões de atalho na barra LaTeX de cada seção para inserir formatação.</span></div>
+    <div id="secs"></div>
+    <div class="add-row">
+      <button class="btn-add" onclick="addSec()"><span data-i18n="addSection">＋ Seção</span></button>
+      <button class="btn-add btn-add-table" onclick="addTable()"><span data-i18n="addTable">⊞ Tabela</span></button>
+      <button class="btn-add btn-add-grad" onclick="addGrad()"><span data-i18n="addGrad">◈ Gradiente</span></button>
+      <button class="btn-add btn-add-media" onclick="addMedia()"><span data-i18n="addMedia">▶ Imagem/Mídia</span></button>
+      <button class="btn-add btn-add-slist" onclick="addScalesList()"><span data-i18n="addSlist">☰ Lista de Escalas</span></button>
+      <button class="btn-add btn-add-ilist" onclick="addItemList()"><span data-i18n="addIlist">☑ Lista com Botão</span></button>
+      <button class="btn-add btn-add-quote" onclick="addQuote()"><span data-i18n="addQuote">❝ Citação Destaque</span></button>
+    </div>
+
+  </div><!-- end panel-left -->
+
+  <!-- inputs ocultos para compatibilidade com collect() / saveDraft() -->
+  <input type="hidden" id="qe" value=""/>
+  <input type="hidden" id="f-qen" value=""/>
+  <input type="hidden" id="f-qp" value=""/>
+
+  <!-- stat + hidden out-wrap (controls available via topbar after generation) -->
+  <div id="stat" class="stat" style="flex-shrink:0"></div>
+  <div id="out-wrap" style="display:none">
+    <p id="gen-summary" style="display:none"></p>
+  </div>
+
+</div><!-- end main-layout -->
+
+<!-- ══ PREVIEW MODAL ══ -->
+<div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-title">Preview</span>
+      <div class="modal-tabs">
+        <button class="modal-tab active" id="mtab-preview" onclick="switchModalTab('preview')">◉ Preview</button>
+        <button class="modal-tab" id="mtab-code" onclick="switchModalTab('code')">〈〉 Código <span id="mtab-code-lock" style="font-size:8px;opacity:.6">🔒</span></button>
+      </div>
+      <button id="btn-modal-toggle" onclick="toggleModalTab()" style="display:none;background:var(--paper-deep);border:1px solid var(--rule-strong);border-radius:3px;font-family:var(--font-mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);padding:4px 10px;cursor:pointer;white-space:nowrap">◉ Preview</button>
+      <button class="btn-a" id="btn-new-tab" onclick="openInNewTab()" style="padding:4px 10px;font-size:9px" title="Abrir preview em nova aba">↗ Nova aba</button>
+      <button class="btn-a" onclick="toggleDD('dd-export-modal','dd-export-modal-btn')" id="dd-export-modal-btn" style="padding:4px 10px;font-size:9px;display:flex;align-items:center;gap:4px">⬇ Exportar <span style="font-size:7px;opacity:.6">▾</span></button>
+      <button class="modal-close" onclick="closeModal()">✕ Fechar</button>
+    </div>
+    <div class="modal-body">
+      <iframe class="modal-iframe" id="modal-frame" sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox" style="display:none"></iframe>
+      <pre class="modal-code" id="modal-code" style="display:none"></pre>
+    </div>
+  </div>
+</div>
+<!-- Export dropdown inside modal (shared with header one) -->
+<div id="dd-export-modal" style="display:none;position:fixed;z-index:99000;background:var(--paper-warm);border:1px solid var(--rule-strong);border-radius:4px;box-shadow:0 4px 16px rgba(0,0,0,.22);min-width:220px;overflow:hidden">
+  <div style="padding:7px 14px 4px;font-family:var(--font-mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);border-bottom:1px solid var(--rule)">Exportar como…</div>
+  <button onclick="dl();closeDD('dd-export-modal')" style="display:block;width:100%;text-align:left;background:none;border:none;border-bottom:1px solid var(--rule);font-family:var(--font-mono);font-size:9.5px;letter-spacing:.06em;color:var(--ink-soft);padding:9px 14px;cursor:pointer" onmouseover="this.style.background='var(--paper-deep)'" onmouseout="this.style.background='none'">⬇ HTML (.html)</button>
+  <button onclick="dlPdf();closeDD('dd-export-modal')" style="display:block;width:100%;text-align:left;background:none;border:none;border-bottom:1px solid var(--rule);font-family:var(--font-mono);font-size:9.5px;letter-spacing:.06em;color:var(--ink-soft);padding:9px 14px;cursor:pointer" onmouseover="this.style.background='var(--paper-deep)'" onmouseout="this.style.background='none'">⬇ PDF (.pdf)</button>
+  <button onclick="dlMarkdown();closeDD('dd-export-modal')" style="display:block;width:100%;text-align:left;background:none;border:none;border-bottom:1px solid var(--rule);font-family:var(--font-mono);font-size:9.5px;letter-spacing:.06em;color:var(--ink-soft);padding:9px 14px;cursor:pointer" onmouseover="this.style.background='var(--paper-deep)'" onmouseout="this.style.background='none'">⬇ Markdown (.md)</button>
+  <button onclick="dlLatex();closeDD('dd-export-modal')" style="display:block;width:100%;text-align:left;background:none;border:none;font-family:var(--font-mono);font-size:9.5px;letter-spacing:.06em;color:var(--ink-soft);padding:9px 14px;cursor:pointer" onmouseover="this.style.background='var(--paper-deep)'" onmouseout="this.style.background='none'">⬇ LaTeX (.tex)</button>
+</div>
+
+<!-- ══ TOAST STACK (notificações MSN) ══ -->
+<div id="toast-stack"></div>
+
+<!-- ══ IMAGE SEARCH MODAL (Unsplash) ══ -->
+<div id="imgsearch-modal" onclick="if(event.target===this)closeImgSearch()">
+  <div class="imgsearch-box">
+    <div class="imgsearch-header">
+      <span class="imgsearch-title" data-i18n="unsplashTitle">🔍 Buscar imagens</span>
+      <input class="imgsearch-q" type="text" id="imgsearch-q" placeholder="mountains, books, music, abstract…"
+        onkeydown="if(event.key==='Enter')runImgSearch(1)"/>
+      <button class="imgsearch-btn-search" onclick="runImgSearch(1)" data-i18n="unsplashSearch">Buscar</button>
+      <button class="imgsearch-close" onclick="closeImgSearch()" title="Fechar">✕</button>
+    </div>
+    <div class="imgsearch-key-row" id="imgsearch-key-row">
+      <span style="font-family:var(--font-mono);font-size:8.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted);flex-shrink:0" data-i18n="unsplashKeyLbl">Unsplash Access Key:</span>
+      <input class="imgsearch-key-inp" type="password" id="imgsearch-apikey"
+        placeholder="Cole seu Access Key gratuito de unsplash.com/developers…"
+        oninput="localStorage.setItem('gen_unsplash_key',this.value);_imgKeyFeedback()"
+        onfocus="this.type='text'" onblur="this.type='password'"/>
+      <span id="imgsearch-key-ok" style="font-size:13px;color:var(--success);display:none">✓</span>
+      <a href="https://unsplash.com/developers" target="_blank" rel="noopener"
+        style="font-family:var(--font-mono);font-size:8.5px;color:var(--accent-soft);text-decoration:none;white-space:nowrap;flex-shrink:0"
+        onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--accent-soft)'" data-i18n="unsplashGetKey">Obter key grátis ↗</a>
+    </div>
+    <div class="imgsearch-filters">
+      <span class="imgsearch-filter-lbl" data-i18n="unsplashOrient">Orientação:</span>
+      <select class="imgsearch-sel" id="imgsearch-orient">
+        <option value="" data-i18n="unsplashAny">Qualquer</option>
+        <option value="landscape" selected data-i18n="unsplashLandsc">Horizontal</option>
+        <option value="portrait" data-i18n="unsplashPortr">Vertical</option>
+        <option value="squarish" data-i18n="unsplashSquare">Quadrada</option>
+      </select>
+      <span class="imgsearch-filter-lbl" data-i18n="unsplashOrder">Ordem:</span>
+      <select class="imgsearch-sel" id="imgsearch-order">
+        <option value="relevant" data-i18n="unsplashRelevant">Relevância</option>
+        <option value="latest" data-i18n="unsplashLatest">Mais recente</option>
+      </select>
+      <span class="imgsearch-filter-lbl" style="margin-left:auto;opacity:.55">Powered by Unsplash</span>
+    </div>
+    <div class="imgsearch-body">
+      <div id="imgsearch-grid" class="imgsearch-grid"></div>
+      <div id="imgsearch-msg" class="imgsearch-msg" style="display:none"></div>
+    </div>
+    <div class="imgsearch-footer">
+      <button class="imgsearch-page-btn" id="imgsearch-prev" onclick="runImgSearch(_imgPage-1)" disabled data-i18n="unsplashPrev">← Anterior</button>
+      <span class="imgsearch-page-info" id="imgsearch-info"></span>
+      <button class="imgsearch-page-btn" id="imgsearch-next" onclick="runImgSearch(_imgPage+1)" disabled data-i18n="unsplashNext">Próxima →</button>
+    </div>
+  </div>
+</div>
+<!-- ══ COLOR POPOVER (for section rich-text color pickers) ══ -->
+<div id="color-popover" class="color-popover">
+  <div class="color-popover-title" id="color-popover-title">Cor do texto</div>
+  <input type="color" id="color-popover-inp" value="#1a1714"/>
+  <div class="color-presets" id="color-presets"></div>
+</div>
+
+<!-- ══ GENERATION LOG MODAL ══ -->
+<div class="gen-log-overlay" id="gen-log-overlay">
+  <div class="gen-log-box">
+    <div class="gen-log-title" id="gen-log-provider">⚡ Gerando página…</div>
+    <div class="gen-log-steps" id="gen-log-steps"></div>
+    <div class="gen-log-elapsed" id="gen-log-elapsed"></div>
+  </div>
+</div>
+
+
+<div id="profile-modal" onclick="if(event.target===this)toggleProfileModal()">
+<script>
+function a0_0x4a19(){var _0x1479e2=['\x33\x37\x32\x33\x34\x30\x31\x4a\x4c\x49\x6d\x70\x7a','\x64\x69\x73\x70\x6c\x61\x79','\x33\x30\x31\x30\x38\x34\x30\x5a\x65\x64\x51\x62\x65','\x32\x34\x79\x4d\x69\x67\x4d\x47','\x33\x31\x33\x35\x35\x32\x77\x68\x69\x6a\x41\x79','\x31\x35\x47\x44\x67\x71\x51\x6e','\x38\x33\x37\x35\x31\x36\x54\x46\x54\x55\x51\x63','\x33\x31\x38\x32\x35\x38\x72\x66\x48\x41\x74\x48','\x67\x65\x74\x45\x6c\x65\x6d\x65\x6e\x74\x42\x79\x49\x64','\x32\x33\x31\x36\x31\x31\x34\x67\x51\x4c\x52\x78\x78','\x70\x6d\x2d\x61\x76\x61\x74\x61\x72\x2d\x69\x6e\x69\x74\x69\x61\x6c\x73','\x33\x49\x4b\x43\x50\x41\x75','\x73\x74\x79\x6c\x65','\x73\x72\x63','\x31\x33\x39\x31\x33\x32\x71\x6a\x6d\x59\x74\x46','\x31\x48\x58\x53\x64\x59\x71','\x61\x64\x64\x45\x76\x65\x6e\x74\x4c\x69\x73\x74\x65\x6e\x65\x72','\x44\x4f\x4d\x43\x6f\x6e\x74\x65\x6e\x74\x4c\x6f\x61\x64\x65\x64','\x37\x30\x43\x71\x74\x51\x5a\x67','\x67\x65\x74\x49\x74\x65\x6d'];a0_0x4a19=function(){return _0x1479e2;};return a0_0x4a19();}function a0_0x1fbd(_0x79e96c,_0x2d87a4){_0x79e96c=_0x79e96c-0x152;var _0x4a19ac=a0_0x4a19();var _0x1fbd5f=_0x4a19ac[_0x79e96c];return _0x1fbd5f;}(function(_0x4683ce,_0xfbe8d9){var _0x4db54d=a0_0x1fbd,_0xc297b1=_0x4683ce();while(!![]){try{var _0x11557c=parseInt(_0x4db54d(0x15f))/0x1*(parseInt(_0x4db54d(0x15e))/0x2)+parseInt(_0x4db54d(0x15b))/0x3*(-parseInt(_0x4db54d(0x156))/0x4)+parseInt(_0x4db54d(0x155))/0x5*(parseInt(_0x4db54d(0x157))/0x6)+-parseInt(_0x4db54d(0x162))/0x7*(parseInt(_0x4db54d(0x154))/0x8)+parseInt(_0x4db54d(0x159))/0x9+-parseInt(_0x4db54d(0x152))/0xa+-parseInt(_0x4db54d(0x164))/0xb*(-parseInt(_0x4db54d(0x153))/0xc);if(_0x11557c===_0xfbe8d9)break;else _0xc297b1['push'](_0xc297b1['shift']());}catch(_0x21f3ae){_0xc297b1['push'](_0xc297b1['shift']());}}}(a0_0x4a19,0x3fa0c),(function(){var _0x89093a=a0_0x1fbd,_0x2a9ae0=localStorage[_0x89093a(0x163)]('\x70\x6d\x2d\x61\x76\x61\x74\x61\x72\x2d\x64\x61\x74\x61');if(!_0x2a9ae0)return;document[_0x89093a(0x160)](_0x89093a(0x161),function(){var _0x3f9ab6=_0x89093a,_0x53f1bc=document[_0x3f9ab6(0x158)]('\x70\x6d\x2d\x61\x76\x61\x74\x61\x72\x2d\x69\x6d\x67'),_0x44a0ca=document[_0x3f9ab6(0x158)](_0x3f9ab6(0x15a));_0x53f1bc&&(_0x53f1bc[_0x3f9ab6(0x15d)]=_0x2a9ae0,_0x53f1bc[_0x3f9ab6(0x15c)]['\x64\x69\x73\x70\x6c\x61\x79']=''),_0x44a0ca&&(_0x44a0ca['\x73\x74\x79\x6c\x65'][_0x3f9ab6(0x165)]='\x6e\x6f\x6e\x65');});}()));
+</script>
+  <div class="pm-box">
+    <button class="pm-close" onclick="toggleProfileModal()">✕</button>
+    <div class="pm-hero">
+      <div class="pm-avatar" id="pm-avatar-wrap"><img id="pm-avatar-img" src="data:image/jpeg;base64,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" alt="Ivan Moriá Borges" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block" onerror="this.style.display='none';document.getElementById('pm-avatar-initials').style.display='flex'"><span id="pm-avatar-initials" style="display:none;width:100%;height:100%;align-items:center;justify-content:center;font-family:var(--font-serif,serif);font-size:26px;font-weight:600;color:#fff;letter-spacing:-.5px">IM</span></div>
+      <div>
+
+
+
+
+
+
+        <div class="pm-name">Ivan Moriá Borges</div>
+        <div class="pm-title" id="pm-title-text">Musicoterapeuta · Professor · Doutorando em Música UFMG</div>
+        <div class="pm-bio" id="pm-bio-text">Criador do Chapter Generator — nascida da prática acadêmica e do compromisso com a acessibilidade para pessoas com baixa visão, com audiodescrição nativa e tradução para mais de 60 idiomas.</div>
+
+      </div>
+    </div>
+    <div class="pm-contact">
+      <div class="pm-section-lbl" id="pm-contact-lbl">Contato</div>
+      <div class="pm-contact-row">
+        <span class="pm-contact-icon">✉</span>
+        <span class="pm-contact-val" id="pm-email-val"></span>
+        <script>
+var a0_0x47492b=a0_0x1ae8;function a0_0x446e(){var _0x1b567e=['\x74\x65\x78\x74\x43\x6f\x6e\x74\x65\x6e\x74','\x31\x30\x30\x39\x58\x44\x56\x76\x43\x78','\x67\x6d\x61\x69\x6c\x2e\x63\x6f\x6d','\x31\x37\x37\x32\x54\x41\x64\x45\x54\x4f','\x37\x30\x32\x47\x51\x4d\x42\x6e\x49','\x31\x35\x30\x33\x37\x71\x78\x6a\x62\x49\x4f','\x36\x30\x36\x35\x35\x38\x30\x74\x63\x5a\x68\x62\x72','\x31\x35\x39\x39\x39\x34\x34\x4a\x54\x64\x56\x64\x47','\x33\x37\x33\x34\x35\x37\x78\x4b\x41\x76\x75\x4f','\x39\x35\x31\x36\x74\x58\x68\x46\x6e\x43','\x39\x35\x57\x74\x4d\x6a\x63\x66','\x70\x6d\x2d\x65\x6d\x61\x69\x6c\x2d\x76\x61\x6c','\x33\x5a\x78\x57\x78\x56\x44','\x67\x65\x74\x45\x6c\x65\x6d\x65\x6e\x74\x42\x79\x49\x64','\x33\x37\x37\x31\x32\x57\x56\x5a\x46\x6f\x56','\x6a\x6f\x69\x6e','\x31\x38\x39\x36\x30\x36\x47\x4f\x57\x65\x71\x51'];a0_0x446e=function(){return _0x1b567e;};return a0_0x446e();}function a0_0x1ae8(_0x41b26f,_0x3be20c){_0x41b26f=_0x41b26f-0xc3;var _0x446e9b=a0_0x446e();var _0x1ae8ed=_0x446e9b[_0x41b26f];return _0x1ae8ed;}(function(_0x4cbf2d,_0x54557f){var _0x76e7d7=a0_0x1ae8,_0x4b5609=_0x4cbf2d();while(!![]){try{var _0x1658c0=-parseInt(_0x76e7d7(0xd3))/0x1*(-parseInt(_0x76e7d7(0xc4))/0x2)+-parseInt(_0x76e7d7(0xcd))/0x3*(-parseInt(_0x76e7d7(0xc8))/0x4)+-parseInt(_0x76e7d7(0xcb))/0x5*(-parseInt(_0x76e7d7(0xd1))/0x6)+-parseInt(_0x76e7d7(0xc9))/0x7+-parseInt(_0x76e7d7(0xcf))/0x8*(-parseInt(_0x76e7d7(0xc5))/0x9)+-parseInt(_0x76e7d7(0xc7))/0xa+parseInt(_0x76e7d7(0xc6))/0xb*(-parseInt(_0x76e7d7(0xca))/0xc);if(_0x1658c0===_0x54557f)break;else _0x4b5609['push'](_0x4b5609['shift']());}catch(_0x3cff64){_0x4b5609['push'](_0x4b5609['shift']());}}}(a0_0x446e,0x7e7f3),document[a0_0x47492b(0xce)](a0_0x47492b(0xcc))[a0_0x47492b(0xd2)]=['\x69\x76\x61\x6e\x6d\x6f\x72\x69\x61\x62\x72',a0_0x47492b(0xc3)][a0_0x47492b(0xd0)]('\x40'));
+</script>
+        <button class="pm-contact-copy" id="pm-copy-email-btn" onclick="(function(){navigator.clipboard.writeText(['ivanmoriabr','gmail.com'].join('@')).then(function(){var b=event.currentTarget;var orig=b.textContent;b.textContent='✓';setTimeout(function(){b.textContent=orig;},2000);})})()">⎘ Copiar</button>
+      </div>
+      <div class="pm-contact-row">
+        <span class="pm-contact-icon">🌐</span>
+        <span class="pm-contact-val">ivanmoria.github.io</span>
+        <a class="pm-contact-copy pm-open-link" href="https://ivanmoria.github.io" target="_blank" rel="noopener">↗ Abrir</a>
+      </div>
+      <div class="pm-contact-row">
+        <span class="pm-contact-icon">💼</span>
+        <span class="pm-contact-val">linkedin.com/in/ivanmoriaborges</span>
+        <a class="pm-contact-copy pm-open-link" href="https://www.linkedin.com/in/ivanmoriaborges/" target="_blank" rel="noopener">↗ Abrir</a>
+      </div>
+    </div>
+    <div class="pm-support">
+      <div class="pm-section-lbl" id="pm-support-lbl">Apoie o projeto</div>
+      <div class="sp-sub" id="pm-support-sub" style="margin-bottom:12px;font-family:var(--font-mono);font-size:9px;color:var(--ink-muted)">Se este app te ajudou, considere contribuir</div>
+      <button id="pm-contribute-main"
+        onclick="document.getElementById('pm-pay-popup').style.display='flex'"
+        class="sp-enter-btn" style="animation:wPulseIn 2s ease-in-out infinite;width:100%;font-size:10px;padding:10px">
+        ♥ Contribuir com o projeto →
+      </button>
+    </div>
+
+<!-- Popup de pagamento do card do perfil -->
+<div id="pm-pay-popup" onclick="if(event.target===this)this.style.display='none'"
+  style="display:none;position:fixed;inset:0;z-index:10000;background:rgba(26,23,20,.6);align-items:center;justify-content:center;padding:16px">
+  <div style="background:var(--paper-warm);border:1px solid var(--rule-strong);border-radius:8px;width:100%;max-width:400px;max-height:90vh;overflow-y:auto;padding:24px;position:relative;box-shadow:0 12px 48px rgba(0,0,0,.28)">
+    <button onclick="document.getElementById('pm-pay-popup').style.display='none'"
+      style="position:absolute;top:10px;right:12px;background:none;border:none;font-size:16px;color:var(--ink-muted);cursor:pointer">✕</button>
+    <div style="font-family:var(--font-mono);font-size:8px;letter-spacing:4px;text-transform:uppercase;color:var(--ink-muted);margin-bottom:6px">Chapter Generator</div>
+    <div style="font-family:var(--font-serif);font-size:20px;font-weight:600;color:var(--ink);margin-bottom:16px" id="pm-popup-title">Apoie o projeto</div>
+    <!-- PIX -->
+    <div style="border:1px solid rgba(45,106,45,.3);border-radius:6px;padding:14px;margin-bottom:10px">
+      <div style="font-family:var(--font-mono);font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:rgba(45,106,45,.85);margin-bottom:8px" id="pm-pix-lbl-txt">PIX — Brasil · R$ 19,90 sugerido</div>
+      <div style="display:flex;align-items:center;gap:8px;background:var(--paper);border:1px solid var(--rule-strong);border-radius:4px;padding:8px 10px;margin-bottom:10px">
+        <span id="pm-pix-key-val" style="font-family:var(--font-mono);font-size:12px;color:var(--ink);flex:1"></span>
+        <button id="pm-pix-copy-btn"
+          onclick="(function(){var k=document.getElementById('pm-pix-key-val').textContent;navigator.clipboard.writeText(k).then(function(){var b=document.getElementById('pm-pix-copy-btn');var o=b.textContent;b.textContent='✓';setTimeout(function(){b.textContent=o;},2500);})})()"
+          style="background:rgba(45,106,45,.85);border:none;border-radius:3px;color:#fff;font-family:var(--font-mono);font-size:9px;padding:5px 10px;cursor:pointer;flex-shrink:0">⎘ Copiar</button>
+      </div>
+      <a id="pm-email-comprovante" style="display:block;text-align:center;background:var(--accent);color:#fff;border-radius:4px;font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:10px;text-decoration:none">
+        ✉ Enviar comprovante por e-mail
+      </a>
+    </div>
+    <!-- Internacional -->
+    <div style="border:1px solid rgba(42,74,138,.3);border-radius:6px;padding:14px">
+      <div style="font-family:var(--font-mono);font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:rgba(42,74,138,.8);margin-bottom:8px" id="pm-intl-lbl-txt">Internacional · US$ 5 sugerido</div>
+      <div style="display:flex;gap:8px">
+        <a href="https://wise.com/pay/me/ivanm4098" target="_blank" rel="noopener"
+          style="flex:1;text-align:center;padding:9px;border:1px solid rgba(42,74,138,.4);border-radius:4px;font-family:var(--font-mono);font-size:10px;color:rgba(42,74,138,.9);text-decoration:none;background:rgba(42,74,138,.06)">↗ Wise</a>
+        <a href="https://www.paypal.com/donate?business=ivanmoriabr%40gmail.com&currency_code=USD" target="_blank" rel="noopener"
+          style="flex:1;text-align:center;padding:9px;border:1px solid rgba(42,74,138,.4);border-radius:4px;font-family:var(--font-mono);font-size:10px;color:rgba(42,74,138,.9);text-decoration:none;background:rgba(42,74,138,.06)">↗ PayPal</a>
+      </div>
+    </div>
+  </div>
+</div>
+  </div>
+</div>
+<script>
+(function(_0x126755,_0x30487d){var _0x13abb1=a0_0x3e08,_0x357f21=_0x126755();while(!![]){try{var _0x1a3271=parseInt(_0x13abb1(0x1f1))/0x1+parseInt(_0x13abb1(0x1fa))/0x2*(-parseInt(_0x13abb1(0x1f8))/0x3)+parseInt(_0x13abb1(0x1f3))/0x4*(parseInt(_0x13abb1(0x1ec))/0x5)+parseInt(_0x13abb1(0x1f2))/0x6+-parseInt(_0x13abb1(0x1f5))/0x7*(-parseInt(_0x13abb1(0x1ed))/0x8)+-parseInt(_0x13abb1(0x1e9))/0x9*(parseInt(_0x13abb1(0x1f7))/0xa)+-parseInt(_0x13abb1(0x1f6))/0xb;if(_0x1a3271===_0x30487d)break;else _0x357f21['push'](_0x357f21['shift']());}catch(_0x5099d2){_0x357f21['push'](_0x357f21['shift']());}}}(a0_0x4782,0xbca37),(function(){var _0x405b5d=a0_0x3e08;function _0x6f3027(){var _0x50085d=a0_0x3e08,_0x5980f6=[_0x50085d(0x1ef),_0x50085d(0x1fb)]['\x6a\x6f\x69\x6e']('\x40'),_0x10d995=document[_0x50085d(0x1ee)](_0x50085d(0x1eb));if(_0x10d995)_0x10d995['\x74\x65\x78\x74\x43\x6f\x6e\x74\x65\x6e\x74']=_0x5980f6;var _0x4fd370=document['\x67\x65\x74\x45\x6c\x65\x6d\x65\x6e\x74\x42\x79\x49\x64'](_0x50085d(0x1e8));if(_0x4fd370)_0x4fd370[_0x50085d(0x1f0)]='\x6d\x61\x69\x6c\x74\x6f\x3a'+_0x5980f6+_0x50085d(0x1ea);}document[_0x405b5d(0x1f9)]===_0x405b5d(0x1f4)?document['\x61\x64\x64\x45\x76\x65\x6e\x74\x4c\x69\x73\x74\x65\x6e\x65\x72']('\x44\x4f\x4d\x43\x6f\x6e\x74\x65\x6e\x74\x4c\x6f\x61\x64\x65\x64',_0x6f3027):_0x6f3027();}()));function a0_0x3e08(_0x5896e2,_0x3fedc7){_0x5896e2=_0x5896e2-0x1e8;var _0x478297=a0_0x4782();var _0x3e08c3=_0x478297[_0x5896e2];return _0x3e08c3;}function a0_0x4782(){var _0x55a417=['\x37\x30\x35\x38\x36\x38\x73\x68\x47\x45\x76\x78','\x6c\x6f\x61\x64\x69\x6e\x67','\x31\x30\x34\x37\x39\x78\x6b\x43\x66\x5a\x7a','\x31\x31\x31\x36\x33\x35\x30\x34\x55\x73\x4d\x47\x6d\x4f','\x32\x30\x72\x6a\x6b\x71\x46\x7a','\x33\x76\x50\x64\x59\x52\x66','\x72\x65\x61\x64\x79\x53\x74\x61\x74\x65','\x33\x38\x39\x30\x34\x32\x44\x7a\x4f\x43\x44\x54','\x67\x6d\x61\x69\x6c\x2e\x63\x6f\x6d','\x70\x6d\x2d\x65\x6d\x61\x69\x6c\x2d\x63\x6f\x6d\x70\x72\x6f\x76\x61\x6e\x74\x65','\x33\x34\x34\x34\x34\x38\x39\x67\x4f\x59\x4b\x4a\x62','\x3f\x73\x75\x62\x6a\x65\x63\x74\x3d\x43\x68\x61\x70\x74\x65\x72\x25\x32\x30\x47\x65\x6e\x65\x72\x61\x74\x6f\x72\x25\x32\x30\x2d\x25\x32\x30\x50\x49\x58\x26\x62\x6f\x64\x79\x3d\x43\x68\x61\x70\x74\x65\x72\x25\x32\x30\x47\x65\x6e\x65\x72\x61\x74\x6f\x72\x25\x32\x30\x2d\x25\x32\x30\x50\x49\x58\x25\x30\x41\x25\x30\x41\x25\x35\x42\x41\x6e\x65\x78\x65\x25\x32\x30\x6f\x25\x32\x30\x63\x6f\x6d\x70\x72\x6f\x76\x61\x6e\x74\x65\x25\x35\x44','\x70\x6d\x2d\x70\x69\x78\x2d\x6b\x65\x79\x2d\x76\x61\x6c','\x32\x30\x78\x4d\x55\x48\x47\x4b','\x31\x31\x38\x34\x70\x55\x47\x58\x43\x69','\x67\x65\x74\x45\x6c\x65\x6d\x65\x6e\x74\x42\x79\x49\x64','\x69\x76\x61\x6e\x6d\x6f\x72\x69\x61\x62\x72','\x68\x72\x65\x66','\x34\x39\x36\x33\x31\x36\x4d\x6f\x7a\x75\x55\x65','\x37\x39\x34\x32\x35\x30\x30\x58\x4b\x59\x61\x4b\x71'];a0_0x4782=function(){return _0x55a417;};return a0_0x4782();}
+</script>
+
+
+<!-- ══ MOBILE BOTTOM NAV ══ -->
+<nav class="mobile-nav" id="mobile-nav" aria-label="Navegação mobile">
+  <button class="mob-nav-btn active" id="mob-btn-acesso" onclick="mobShowPanel('acesso')" title="Acesso">
+    <span class="mob-icon">👤</span>
+    <span id="mob-lbl-acesso" data-i18n="mobAccess">Acesso</span>
+  </button>
+  <div class="mob-nav-sep"></div>
+  <button class="mob-nav-btn" id="mob-btn-meta" onclick="mobShowPanel('meta')" title="Metadados">
+    <span class="mob-icon">📋</span>
+    <span data-i18n="sMetadata">Metadados</span>
+  </button>
+  <div class="mob-nav-sep"></div>
+  <button class="mob-nav-btn" id="mob-btn-theme" onclick="mobShowPanel('theme')" title="Tema">
+    <span class="mob-icon">🎨</span>
+    <span>Tema</span>
+  </button>
+  <div class="mob-nav-sep"></div>
+  <button class="mob-nav-btn" id="mob-btn-sections" onclick="mobShowPanel('sections')" title="Seções">
+    <span class="mob-icon">✏️</span>
+    <span>Seções</span>
+  </button>
+  <div class="mob-nav-sep"></div>
+  <button class="mob-nav-btn mob-nav-gen" id="mob-btn-gen" onclick="gen()" title="Gerar HTML">
+    <span class="mob-icon">⚡</span>
+    <span>Gerar</span>
+  </button>
+</nav>
+
+<!-- ══ PAINEL MOBILE ACESSO ══ -->
+<div id="mob-acesso-panel" style="display:none;position:fixed;inset:0;bottom:56px;top:var(--top-bar-h,88px);background:var(--paper-warm);z-index:400;overflow-y:auto;padding:16px 14px 28px;">
+
+  <!-- Card status / conta -->
+  <div id="mob-auth-card" style="background:var(--paper);border:1px solid var(--rule-strong);border-radius:8px;padding:16px 14px;margin-bottom:12px;">
+    <div id="mob-auth-status-badge" style="margin-bottom:8px"></div>
+    <div id="mob-auth-email" style="font-family:var(--font-mono);font-size:10px;color:var(--ink-muted);letter-spacing:.04em;word-break:break-all;margin-bottom:10px"></div>
+    <button id="mob-signout-btn" onclick="window.authSignOut()"
+      style="background:none;border:1px solid var(--rule-strong);border-radius:4px;font-family:var(--font-mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted);padding:6px 12px;cursor:pointer;width:100%"
+      onmouseover="this.style.borderColor='var(--error,#8b1a1a)';this.style.color='var(--error,#8b1a1a)'"
+      onmouseout="this.style.borderColor='var(--rule-strong)';this.style.color='var(--ink-muted)'">
+      ↩ Sair / Trocar de conta
+    </button>
+  </div>
+
+  <!-- Card PIX — só aparece quando não é paid -->
+  <div id="mob-pix-card" style="background:var(--paper);border:1px solid rgba(45,106,45,.3);border-radius:8px;padding:16px 14px;margin-bottom:12px;">
+    <div id="mob-pix-title" style="font-family:var(--font-mono);font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(45,106,45,.85);margin-bottom:5px"></div>
+    <div id="mob-pix-desc" style="font-family:var(--font-mono);font-size:9px;color:var(--ink-muted);line-height:1.8;margin-bottom:12px"></div>
+    <div id="mob-pix-price" style="margin-bottom:12px"></div>
+    <div id="mob-pix-key-lbl" style="font-family:var(--font-mono);font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:5px"></div>
+    <div style="display:flex;align-items:center;gap:6px;background:var(--paper-warm);border:1px solid var(--rule-strong);border-radius:4px;padding:8px 10px;margin-bottom:10px;min-width:0">
+      <span id="mob-pix-key" style="font-family:var(--font-mono);font-size:11px;color:var(--ink);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
+      <button id="mob-pix-copy"
+        onclick="(function(){var k=document.getElementById('mob-pix-key').textContent;navigator.clipboard.writeText(k).then(function(){var b=document.getElementById('mob-pix-copy');var orig=b.textContent;b.textContent='✓';setTimeout(function(){b.textContent=orig;},2500);})})()"
+        style="background:rgba(45,106,45,.85);border:none;border-radius:3px;color:#fff;font-family:var(--font-mono);font-size:9px;padding:4px 8px;cursor:pointer;flex-shrink:0;white-space:nowrap">
+        ⎘
+      </button>
+    </div>
+    <a id="mob-email-comprovante"
+      style="display:block;text-align:center;background:var(--accent);color:#fff;border-radius:4px;font-family:var(--font-mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;padding:10px;cursor:pointer;text-decoration:none;margin-bottom:7px">
+    </a>
+    <div id="mob-pix-note" style="font-family:var(--font-mono);font-size:8px;color:var(--ink-muted);text-align:center;line-height:1.8"></div>
+    <div style="border-top:1px solid var(--rule);margin-top:14px;padding-top:12px">
+      <div id="mob-intl-lbl" style="font-family:var(--font-mono);font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:rgba(42,74,138,.8);margin-bottom:8px"></div>
+      <div style="display:flex;gap:8px">
+        <a href="https://wise.com/pay/me/ivanm4098" target="_blank" rel="noopener"
+          style="flex:1;text-align:center;padding:9px 6px;border:1px solid var(--rule-strong);border-radius:4px;font-family:var(--font-mono);font-size:10px;color:var(--ink-soft);text-decoration:none">↗ Wise</a>
+        <a href="https://www.paypal.com/donate?business=ivanmoriabr%40gmail.com&currency_code=USD" target="_blank" rel="noopener"
+          style="flex:1;text-align:center;padding:9px 6px;border:1px solid var(--rule-strong);border-radius:4px;font-family:var(--font-mono);font-size:10px;color:var(--ink-soft);text-decoration:none">↗ PayPal</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+
+<!-- ════ SCRIPTS — ordem importa ════ -->
+<!-- 1. Lang/i18n (sem dependências) -->
+<script src="js/lang.js"></script>
+
+<!-- 2. Blocks (depende de lang) -->
+<script src="js/blocks.js"></script>
+
+<!-- 3. AI generation (depende de blocks + lang) -->
+<script src="js/ai.js"></script>
+
+<!-- 4. Export (depende de blocks + ai) -->
+<script src="js/export.js"></script>
+
+<!-- 5. Draft (depende de blocks + export) -->
+<script src="js/draft.js"></script>
+
+<!-- 6. Theme panel + color popover (depende de blocks) -->
+<script src="js/theme.js"></script>
+
+<!-- 7. UI misc: mobile nav, lang scroll -->
+<script src="js/ui.js"></script>
+
+<!-- 8. Auth — trial/payment — carrega por último para poder fazer patch nas funções -->
+<script src="js/auth.js"></script>
+
+</body>
+</html>
